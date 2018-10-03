@@ -1,0 +1,115 @@
+{% include 'core_header.html' %}
+<style type="text/css">
+
+table.bottom_table{
+  font-size: 11px;
+}  
+
+</style>
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+    <h1 class="h2 main_title">Iteration Details For <a href=''><span>999.999.999.999</span></a></h1>
+  </div>
+  
+  <div class="table-responsive">
+    <table class="table table-striped table-sm top_table">
+      <thead>
+        <tr>
+          <th>Source IP</th>
+          <th>Notes</th>
+          <th>No. of Comparisons</th>
+          <th>Date &amp; Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="loader"><td colspan="20" style="text-align: center;"><i class="fas fa-spin fa-2x fa-sync"></i></td></tr>
+      </tbody>
+    </table>
+    <table class="table table-responsive table-striped table-sm bottom_table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Vendor</th>
+          <th scope="col">BDS Static</th>
+          <th scope="col">BDS CDN</th>
+          <th scope="col">DNS</th>
+          <th scope="col">Latency</th>
+          <th scope="col">Connection</th>
+          <th scope="col">Static Speed</th>
+          <th scope="col">CDN Speed</th>
+          <th scope="col">Static URL</th>
+          <th scope="col">CDN URL</th>
+          <th scope="col">C.Time</th>
+          <th scope="col">I.Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="loader"><td colspan="20" style="text-align: center;"><i class="fas fa-spin fa-2x fa-sync"></i></td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<script type="text/javascript">
+
+$(function(){
+  iid      = GetURLParameter('id');
+  if(iid){
+    url = '/api/'+iid
+    $.ajax({
+        type: "GET",
+        url: url,
+        async: true,
+        dataType: 'json',
+        crossDomain: true,
+        success: function(data, status, xhr) {
+          $('tr.loader').remove();
+            $(".main_title span").html(data.SELF_IP)
+            tmpl  = ''
+            tmpl  = "<tr id='" + data._id + "'> \
+            <td>" + data.SELF_IP + "</td> \
+            <td>" + data.NOTES + "</td> \
+            <td>" + data.NumberOfComparisionJobs + "</td> \
+            <td>" + data._created + "</td> \
+            </tr>"
+            $("table.top_table tbody").append(tmpl);
+            i=0
+
+            
+            var i;
+            var threshold=0
+            for (i = 0; i < 100; i++) {
+
+                if (typeof data['VENDER_'+i] === 'undefined'){
+                  threshold=threshold+1
+                  //continue
+                }
+                tmpl2="";
+                tmpl2="<tr> \
+                <th scope='row'>"+ (i+1) +"</th> \
+                <td>"+ RemoveUndefined(data['VENDER_'+i]) +"</td> \
+                <td>"+ RemoveUndefined(data['BASE_DOWNLOAD_SPEED_STATIC_MB_'+i]) +"</td> \
+                <td>"+ RemoveUndefined(data['BASE_DOWNLOAD_SPEED_CDN_MB_'+i]) +"</td> \
+                <td>"+ RemoveUndefined(data['DIALINGDNS_'+i]) +"</td> \
+                <td>"+ RemoveUndefined(data['PING_LATENCY_'+i]) +"</td> \
+                <td>"+ RemoveUndefined(data['CONNECTION_'+i]) +"</td> \
+                <td>"+ RemoveUndefined(data['SPEED_STATIC_MB_'+i]) +"</td> \
+                <td>"+ RemoveUndefined(data['BASE_DOWNLOAD_SPEED_CDN_MB_'+i]) +"</td> \
+                <td>"+ RemoveUndefined(data['URL_STATIC_'+i]) +"</td> \
+                <td>"+ RemoveUndefined(data['URL_CDN'+i]) +"</td> \
+                <td>"+ RemoveUndefined(data['CONNECTION_TIME_'+i]) +"</td> \
+                <td>"+ RemoveUndefined(data['ITERATION_TIME_DIFF_'+i]) +"</td> \
+                </tr>"
+                $("table.bottom_table tbody").append(tmpl2);
+                if (threshold>=5){ break; }
+            } 
+        }
+    });
+  }
+
+  
+})
+</script>
+
+{% include 'core_footer.html' %}
+  

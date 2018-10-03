@@ -1,0 +1,32 @@
+<nav class="col-md-2 d-none d-md-block bg-light sidebar">
+  <div class="sidebar-sticky">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a {%- if request.path == "/home" %} class='nav-link active' {% else %} class='nav-link' {% endif %} href="/home"> <span data-feather="home"></span> Dashboard </a>
+      </li>
+      {%- if request.path == "/iteration-details" %}
+      <li class="nav-item">
+        <a {%- if request.path == "/iteration-details" %} class='nav-link active' {% else %} class='nav-link' {% endif %} href="#"> <span data-feather="file"></span> Iteration Details </a>
+      </li>
+      {% endif %}
+    </ul>
+
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+      <span>More Options</span>
+      <a class="d-flex align-items-center text-muted" href="#">
+        <span data-feather="plus-circle"></span>
+      </a>
+    </h6>
+    <ul class="nav flex-column mb-2">
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <span data-feather="file-text"></span>
+          Some Link
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#"> <span data-feather="file"></span> Historic Data </a>
+      </li>
+    </ul>
+  </div>
+</nav>
