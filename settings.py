@@ -14,7 +14,7 @@ data = {
   'id_field': '_id',
   'item_url': 'regex("[a-zA-Z0-9.-]+")',
   'cache_control': 'max-age=10,must-revalidate',
-  'cache_expires': 10,
+  'cache_expires': 1,
   'schema': { '_id': { 'type': 'string' } }
 }
 
