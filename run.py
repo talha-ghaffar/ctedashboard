@@ -42,6 +42,11 @@ def logout():
 def homepage():
     return render_template('main.html')
 
+@app.route('/configuration')
+@login_required
+def configuration():
+    return render_template('configuration.html')
+
 @app.route('/iteration-details')
 @login_required
 def iteration_details():
