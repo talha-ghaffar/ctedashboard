@@ -1,0 +1,81 @@
+{% include 'core_header.html' %}
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" >
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+    <h1 class="h2">List Jobs</h1>
+  </div>
+  <div class="table-responsive">
+
+  	{% if result.show_details is defined %}
+
+  		{{ result.host_machine._id }} <br>
+  		{{ result.host_machine.host_address }} <br>
+  		{{ result.host_machine.machine_notes }} <br>
+
+
+  		
+
+  		<table class="table">
+	        <thead>
+	          <tr>
+	            <th>#</th>
+	            <th>Vendor</th>
+	            <th>Destination Address</th>
+	            <th>Port</th>
+	            <th>D1</th>
+	            <th>D2</th>
+	            <th>Config</th>
+	          </tr>
+	        </thead>
+	      {% for item in result.iterations_list %}
+	        <tr>
+	          <td>#</td>
+	          <td>{{ item.vpn_provider }}</td>
+	          <td>{{ item.dest_address }}</td>
+	          <td>{{ item.vpn_port }}</td>
+	          <td>{{ item.download_file_1 }}</td>
+	          <td>{{ item.download_file_2 }}</td>
+	          <td><a target="_blank" href="/view-config/{{ item._id }}">View Config</a></td>
+	        </tr>
+	      {% endfor %}
+	    </table>
+  	{% else %}
+
+	  	<table class="table">
+	        <thead>
+	          <tr>
+	            <th>#</th>
+	            <th>Host Address</th>
+	            <th>Notes</th>
+	            <th>Options</th>
+	          </tr>
+	        </thead>
+	      {% for item in result.hosts %}
+	        <tr>
+	          <td>#</td>
+	          <td>{{ item.host_address }}</td>
+	          <td>{{ item.machine_notes }}</td>
+	          <td>
+	            <a href="/list-iterations/{{ item._id }}">Open</a>&nbsp;|&nbsp;
+	            <a href="/delete-iterations/{{ item._id }}">Delete</a>
+	          </td>
+	        </tr>
+	      {% endfor %}
+	    </table>
+
+  	{% endif %}
+
+    
+   
+    
+  </div>
+</main>
+
+<script type="text/javascript">
+
+$(function(){
+  
+})
+</script>
+{% include 'core_footer.html' %}
+  

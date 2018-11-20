@@ -19,9 +19,21 @@
     </h6>
     <ul class="nav flex-column mb-2">
       <li class="nav-item">
-        <a {%- if request.path == "/configuration" %} class='nav-link active' {% else %} class='nav-link' {% endif %} href="/configuration">
+        <a {%- if request.path == "/list-iterations" %} class='nav-link active' {% else %} class='nav-link' {% endif %} href="/list-iterations">
           <span data-feather="file-text"></span>
-          View Configuration
+          List Iterations
+        </a>
+      </li>
+      <li class="nav-item">
+        <a {%- if request.path == "/add-iteration" %} class='nav-link active' {% else %} class='nav-link' {% endif %} href="/add-iteration">
+          <span data-feather="plus"></span>
+          Add Iteration
+        </a>
+      </li>
+      <li class="nav-item">
+        <a {%- if request.path == "/help" %} class='nav-link active' {% else %} class='nav-link' {% endif %} href="/help">
+          <span data-feather="help-circle"></span>
+          Help
         </a>
       </li>
     </ul>

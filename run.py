@@ -1,5 +1,8 @@
 #!/usr/bin/python
-#
+# Developer Saad Arshad <gaditek.saad@gmail.com>
+# November 2018
+# Python Eve
+
 import os
 import time
 from flask import request, render_template, send_from_directory
@@ -9,6 +12,7 @@ from eve import Eve
 from pymongo import MongoClient
 from flask import jsonify
 import json
+from bson.objectid import ObjectId
 
 client = MongoClient('localhost', 27017);
 db = client.benchmark;
@@ -47,11 +51,152 @@ def homepage():
 def configuration():
     return render_template('configuration.html')
 
+@app.route('/help')
+@login_required
+def show_help():
+    return render_template('tpl-help.html')
+
 @app.route('/iteration-details')
 @login_required
 def iteration_details():
     return render_template('tpl-iteration-details.html')
 
+
+@app.route('/list-iterations')
+@app.route('/list-iterations/<iteration_id>')
+@login_required
+def list_iterations(iteration_id=False):
+    data = {}
+    error = []
+    iterations = []
+    if iteration_id:
+        data['show_details'] = iteration_id
+        host_machines = app.data.driver.db['host_machines']
+        host_machine = host_machines.find_one({"_id":ObjectId(iteration_id)})
+
+        data['host_machine'] = host_machine
+        if host_machine is None:
+            error.append('ID Not Found in Database')
+        else:
+            machine_iteration_obj   =   app.data.driver.db['machine_iterations']
+            machine_iterations      =   machine_iteration_obj.find({"host_id":ObjectId(iteration_id)})
+
+
+            for all_iterations in machine_iterations:
+                iterations.append(all_iterations)
+
+            data['iterations_list'] = iterations
+    else:
+        data_hosts = []
+        host_machines = app.data.driver.db['host_machines']
+        host_machine = host_machines.find()
+
+        for hosts in host_machine:
+            data_hosts.append(hosts)
+
+
+        data['hosts'] = data_hosts
+    return render_template('tpl-list-iterations.html', result=data)
+
+
+@app.route('/delete-iterations/<iid>')
+@login_required
+def delete_iteration(iid):
+    host_machines = app.data.driver.db['host_machines']
+    host_machine = host_machines.find_one({"_id":ObjectId(iid)})
+    if host_machine is not None:
+        delete_machine = host_machines.remove({"_id":ObjectId(iid)})
+        if delete_machine is not None:
+            machine_iteration_obj   =   app.data.driver.db['machine_iterations']
+            delete_iterations       =   machine_iteration_obj.remove({"host_id":ObjectId(iid)})
+
+    return redirect(url_for('list_iterations'))
+
+@app.route('/view-config/<iid>')
+@login_required
+def view_config(iid):
+    data = {}
+    machine_iteration_obj   =   app.data.driver.db['machine_iterations']
+    config_file       =   machine_iteration_obj.find_one({"_id":ObjectId(iid)})
+    data['config'] = config_file
+    return render_template('tpl-view-config.html', result=data)
+
+@app.route('/add-iteration', methods=['GET', 'POST'])
+@login_required
+def add_iteration():
+    if request.method == 'POST':
+        host_address        = request.form['host_ip_address']
+        machine_notes         = request.form['machine_notes']
+        
+        
+
+        vpn_provider        = request.form.getlist('vpn_provider[]')
+        vpn_portocol        = request.form.getlist('vpn_protocol[]')
+        dest_address       = request.form.getlist('dest_address[]')
+        vpn_port       = request.form.getlist('vpn_port[]')
+        download_file_1       = request.form.getlist('download_file_1[]')
+        download_file_2       = request.form.getlist('download_file_2[]')
+        config       = request.form.getlist('config[]')
+        
+        host_machines = app.data.driver.db['host_machines']
+        host_machine = host_machines.insert({
+            "host_address":host_address,
+            "machine_notes":machine_notes,
+        });
+
+    
+
+        machine_iterations = app.data.driver.db['machine_iterations']
+        for x in range(len(dest_address)):
+            machine_iteration = machine_iterations.insert({
+                "host_id":host_machine,
+                "vpn_provider":vpn_provider[x],
+                "vpn_portocol":vpn_portocol[x],
+                "dest_address":dest_address[x],
+                "vpn_port":vpn_port[x],
+                "download_file_1":download_file_1[x],
+                "download_file_2":download_file_2[x],
+                "config":config[x]
+            });
+        return redirect(url_for('list_iterations'))
+    else:
+        return render_template('tpl-add-iteration.html')
+
+
+
+@app.route('/config/<ip>', methods=['GET'])
+#@login_required
+def get_config(ip):
+    json = {}
+    json['settings'] = {}
+    json['settings']['jobs'] = {}
+
+    host_machines = app.data.driver.db['host_machines']
+    host_machine = host_machines.find_one({"host_address":ip})
+    if host_machine is not None:
+        json['status'] = True
+        json['settings']['jobs'][host_machine['host_address']] = {}
+
+        json['settings']['jobs'][host_machine['host_address']]['notes'] = host_machine['machine_notes']
+        json['settings']['jobs'][host_machine['host_address']]['comparisions'] = []
+
+        machine_iteration_obj   =   app.data.driver.db['machine_iterations']
+        machine_iterations      =   machine_iteration_obj.find({"host_id":ObjectId(host_machine['_id'])})
+        if machine_iterations is not None:
+            for lines in machine_iterations:
+                temp = {}
+                temp['vendor'] = lines['vpn_provider']
+                temp['dest_address'] = lines['dest_address']
+                temp['proto'] = lines['vpn_portocol']
+                temp['port'] = lines['vpn_port']
+                temp['download_cdn'] = lines['download_file_1']
+                temp['download_static'] = lines['download_file_2']
+                temp['config'] = lines['config']
+                json['settings']['jobs'][host_machine['host_address']]['comparisions'].append(temp)
+    else:
+        json['status'] = False
+        json['error'] = 'Host not found',ip
+    return jsonify(json)
     
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -72,7 +217,6 @@ def loginpage():
 
 @app.route('/get-iterations', methods=['GET'])
 def graph_infrastats():
-
     data = {}
     result = db.pingapisources.distinct("country")
     url = "/api"
