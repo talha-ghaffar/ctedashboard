@@ -25,6 +25,7 @@
 	            <th>D1</th>
 	            <th>D2</th>
 	            <th>Config</th>
+	            <th>Options</th>	            
 	          </tr>
 	        </thead>
 	      {% for item in result.iterations_list %}
@@ -36,6 +37,8 @@
 	          <td>{{ item.download_file_1 }}</td>
 	          <td>{{ item.download_file_2 }}</td>
 	          <td><a target="_blank" href="/view-config/{{ item._id }}">View Config</a></td>
+	          <!-- <td><a target="_blank" href="/update-record/{{ item._id }}"><i class='fa fa-pencil-square-o' aria-hidden='true'></i></a></td> -->
+	          <td><a target="_blank" href="/update-record?&id={{ item._id }}"><i class='fa fa-pencil-square-o' aria-hidden='true'></i></a></td>
 	        </tr>
 	      {% endfor %}
 	    </table>

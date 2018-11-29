@@ -1,0 +1,151 @@
+{% include 'core_header.html' %}
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" >
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+    <h1 class="h2">Update Jobs</h1>
+  </div>
+
+    <div class="container">
+      	<div class="row">
+	        <div class="col-md-6">
+				<div class="bs-example" data-example-id="basic-forms">
+			        
+			        <div class="form-group">
+			            <label>Vendor</label>
+			            <!--<input class="form-control" type="text" id="vendor">-->
+						<select id="vendor" name="vendor" class="form-control">
+						<option value="purevpn">Purevpn</option>
+						<option value="expressvpn">Express VPN</option>
+						<option value="ipvanish">IPVanish</option>
+						<option value="nordvpn">NordVPN</option>
+						</select>			            
+			        </div>
+			        
+			        <div class="form-group">
+			            <label>Download Link 1</label>
+			            <input class="form-control" type="text" id="d1"> 
+			        </div>			        
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="bs-example" data-example-id="basic-forms">			    	
+			    	<div class="form-group">
+			            <label>Port</label>
+			            <input class="form-control" type="text" id="port"> 
+			        </div>			        
+			        <div class="form-group">
+			            <label>Download Link 2</label>
+			            <input class="form-control" type="text" id="d2"> 
+			        </div>				
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="bs-example" data-example-id="basic-forms">
+			        <div class="form-group">
+			            <label>Destination Address</label>
+			            <input class="form-control" type="text" id="destination_address">
+			        </div>			    				        
+				
+				</div>
+			</div>		  
+			<div class="col-md-6">
+				<div class="bs-example" data-example-id="basic-forms">
+
+			        <div class="form-group">
+			            <label>Protocol</label>
+			            <input class="form-control" type="text" id="protocol"> 
+			        </div>
+		   		</div>
+			</div>
+      	</div>
+      	<div class="row">
+			<div class="col-md-12">
+				<div class="bs-example" data-example-id="basic-forms">
+			        <div class="form-group">
+ 			            <label>Config</label>
+			            <!--<input class="form-control" type="text" id="config"> -->
+						<textarea rows="6" cols="80" class="form-control" id="config">
+						</textarea>
+			        </div>			    				        
+				
+				</div>
+			</div>
+			<div class="col-md-12">
+				<button type="submit" class="btn btn-default" id="update_records">Update</button>
+			</div>      	
+		</div>		  
+     </div>
+ </div><!-- /.container -->
+
+
+</main>
+
+<script type="text/javascript">
+
+function GetURLParameter(sParam){
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++){
+      var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam){
+          return $.trim(sParameterName[1]);
+        }
+    }
+}	
+
+	$(document).ready(function(){
+
+			var update_id = GetURLParameter('id');
+			$.ajax({
+	        type: "GET",
+			url: "/get-job-details/"+update_id,
+			async:true,
+	        dataType : 'json',   //you may use jsonp for cross origin request
+	        crossDomain:true,
+	        success: function(data) {
+	        	//console.log(data.jobdetails[0].dest_address)
+				$("#d1").val(data.jobdetails[0].download_file_1);
+				$("#d2").val(data.jobdetails[0].download_file_2);
+				$("#port").val(data.jobdetails[0].vpn_port);
+				$("#config").val(data.jobdetails[0].config);
+				$("#destination_address").val(data.jobdetails[0].dest_address);
+				$("#vendor").val(data.jobdetails[0].vpn_provider);
+				$("#protocol").val(data.jobdetails[0].vpn_portocol);				
+				}
+			});
+
+
+			$('#update_records').on('click',function (){
+  				var param = {
+  					download_file_1 :$("#d1").val(),
+					download_file_2 :$("#d2").val(),
+					vpn_port :$("#port").val(),
+					config :$("#config").val(),
+					dest_address :$("#destination_address").val(),
+					vpn_provider :$("#vendor").val(),
+					vpn_portocol :$("#protocol").val()
+        		}
+   				$.ajax({   							
+  					data: JSON.stringify(param),		
+   					type:'PUT',
+  				 	dataType: 'json',
+  				 	headers: { "Content-Type": "application/json"},
+   					url : "/get-job-details/"+update_id,
+	   					success: function(data, textStatus, jQxhr ) {
+	   						alert('Record Updated Successfully')
+		        			window.location.href = "/list-iterations";
+	   					},
+	   					error:function(exception){
+		      				alert('Exception:'+exception);
+	  				 	}
+				}); 
+			});
+
+
+	});
+
+</script>
+
+
+{% include 'core_footer.html' %}
+  

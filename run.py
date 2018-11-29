@@ -99,6 +99,43 @@ def list_iterations(iteration_id=False):
     return render_template('tpl-list-iterations.html', result=data)
 
 
+@app.route('/update-record')
+@login_required
+def update_record():
+    return render_template('tpl-update-iterations.html')
+
+
+@app.route('/get-job-details/<jid>', methods=['GET', 'PUT'])
+@login_required
+def get_job_details(jid):
+    if request.method == 'GET':
+        datalist = db.machine_iterations.find({"_id":ObjectId(jid)})
+        final ={}
+        string = []
+        for line in datalist:
+            val = {}
+            val['download_file_2'] = line['download_file_2']
+            val['download_file_1'] = line['download_file_1']
+            val['vpn_portocol'] = line['vpn_portocol']
+            val['dest_address'] = line['dest_address']
+            val['vpn_provider'] = line['vpn_provider']
+            val['vpn_port'] = line['vpn_port']
+            val['config'] = line['config']
+            string.append(val)
+        final['jobdetails'] = string
+        #print final
+        return jsonify(final)
+    elif request.method == 'PUT':
+        content = []
+        content=request.get_json()        
+        res = db.machine_iterations.find_one_and_update(
+            { '_id': ObjectId(jid)},
+            { '$set': { 'download_file_1':content['download_file_1'], 'download_file_2':content['download_file_2'], 'vpn_portocol':content['vpn_portocol'], 'dest_address':content['dest_address'], 'vpn_port':content['vpn_port'], 'vpn_provider':content['vpn_provider'], 'config':content['config'] } },
+            upsert=True,
+        )
+        return json.dumps(True)
+
+
 @app.route('/delete-iterations/<iid>')
 @login_required
 def delete_iteration(iid):
@@ -127,9 +164,6 @@ def add_iteration():
     if request.method == 'POST':
         host_address        = request.form['host_ip_address']
         machine_notes         = request.form['machine_notes']
-        
-        
-
         vpn_provider        = request.form.getlist('vpn_provider[]')
         vpn_portocol        = request.form.getlist('vpn_protocol[]')
         dest_address       = request.form.getlist('dest_address[]')
