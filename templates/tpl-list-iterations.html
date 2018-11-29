@@ -38,7 +38,7 @@
 	          <td>{{ item.download_file_2 }}</td>
 	          <td><a target="_blank" href="/view-config/{{ item._id }}">View Config</a></td>
 	          <!-- <td><a target="_blank" href="/update-record/{{ item._id }}"><i class='fa fa-pencil-square-o' aria-hidden='true'></i></a></td> -->
-	          <td><a target="_blank" href="/update-record?&id={{ item._id }}"><i class='fa fa-pencil-square-o' aria-hidden='true'></i></a></td>
+	          <td><a target="_blank" href="/update-record?&id={{ item._id }}"><i class='fa fa-pencil-square-o' aria-hidden='true'></i></a> | <a target="_blank" href="/delete-job/{{ item._id }}"><i class='fa fa-trash' aria-hidden='true'></i></a></td>	          
 	        </tr>
 	      {% endfor %}
 	    </table>

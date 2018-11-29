@@ -136,6 +136,22 @@ def get_job_details(jid):
         return json.dumps(True)
 
 
+
+@app.route('/delete-job/<iid>')
+@login_required
+def delete_job(iid):
+    machine_iterations = app.data.driver.db['machine_iterations']
+    machine_iteration = machine_iterations.find_one({"_id":ObjectId(iid)})
+    if machine_iteration is not None:
+        delete_machine = machine_iterations.remove({"_id":ObjectId(iid)})
+        # if delete_machine is not None:
+        #     machine_iteration_obj   =   app.data.driver.db['machine_iterations']
+        #     delete_iterations       =   machine_iteration_obj.remove({"host_id":ObjectId(iid)})
+    flash('Record Successfully Deleted')        
+    return redirect(url_for('list_iterations'))
+
+
+
 @app.route('/delete-iterations/<iid>')
 @login_required
 def delete_iteration(iid):
