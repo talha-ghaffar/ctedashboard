@@ -1,0 +1,89 @@
+{% include 'core_header.html' %}
+
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" >
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+    <h1 class="h2">IP Whitelist Panel</h1>
+  </div>  
+  <div class="table-responsive">
+      <div class="form-group">
+        <label class="col-md-4 control-label" >Enter IP Address</label>  
+        <div class="col-md-4">
+        <input class="host_ip_address" id="host_ip_address" name="host_ip_address" placeholder="192.168.1.1" class="form-control input-md" type="text">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-md-4 control-label">Add IP Address</label>
+        <div class="col-md-4">                     
+          <input type="submit" name="add" id="add" value="Add IP">
+        </div>        
+      </div>
+      <div class="form-group">
+        <label class="col-md-4 control-label">Remove IP Address</label>
+        <div class="col-md-4">                     
+          <input type="submit" name="remove" id="remove" value="Remove IP">
+        </div>
+      </div>
+  </div>
+</main>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+  $('#add').on('click',function (){
+    var ipaddress = document.getElementById("host_ip_address").value;
+    if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)){
+      var params = {
+        _ipaddress : $('#host_ip_address').val(),
+        _ipremove: '0'
+      };
+      var array = JSON.stringify(params);
+      $.ajax({
+        data: array,
+        type: "POST",
+        headers: { "Content-Type": "application/json"},
+        url :"/ip-whitelist",
+          success: function(data) {
+              alert('IP Whitelisted');
+          },
+          error: function(err){
+              alert('error. something went wrong')
+          }
+      });
+    }
+    else{      
+      alert("You have entered an invalid IP address!")
+      document.getElementById("host_ip_address").value = "";
+      return false
+    }
+  });
+
+
+  $('#remove').on('click',function (){
+    var ipaddress = document.getElementById("host_ip_address").value;      
+    var params = {
+        _ipaddress : $('#host_ip_address').val(),
+        _ipremove: '1'
+      };
+    var array = JSON.stringify(params);
+    $.ajax({
+      data: array,
+      type: "POST",
+      headers: { "Content-Type": "application/json"},
+      url :"/ip-whitelist",
+      success: function(data) {
+          alert('IP Removed');
+      },
+      error: function(err){
+          alert('error. something went wrong')
+          }
+      });
+  });
+
+})
+
+
+</script>
+{% include 'core_footer.html' %}
+  

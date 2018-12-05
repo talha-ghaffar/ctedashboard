@@ -283,5 +283,30 @@ def graph_infrastats():
         data['status'] = False
     return json.dumps(data)
 
+
+
+@app.route('/ip-whitelist-panel')
+@login_required
+def ip_whitelist_panel():
+    return render_template('tpl-ip-whitelist.html')
+
+
+@app.route('/ip-whitelist', methods=['GET', 'POST'])
+def ip_whitelist():
+    import subprocess
+    if request.method == 'POST':
+        content = []
+        content=request.get_json()
+        host_ip_address = content['_ipaddress']
+        if (content['_ipremove'] == '1'):
+            p = subprocess.Popen(["iptables", "-D", "INPUT", "-s", host_ip_address ,"-p", "tcp", "-m", "tcp", "--dport", "5000" , "-j", "ACCEPT"], stdout=subprocess.PIPE)
+        else:
+            p = subprocess.Popen(["iptables", "-A", "INPUT", "-s", host_ip_address ,"-p", "tcp", "-m", "tcp", "--dport", "5000" , "-j", "ACCEPT"], stdout=subprocess.PIPE)
+        p.communicate()
+        return json.dumps(True)
+    else:
+        return render_template('tpl-ip-whitelist.html')
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
