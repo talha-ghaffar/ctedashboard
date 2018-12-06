@@ -1,0 +1,134 @@
+{% include 'core_header.html' %}
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" >
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">&nbsp;</div>
+  <div class="table-responsive">
+
+    <form class="form-horizontal" method="post">
+    <fieldset>
+
+      <!-- Form Name -->
+      <legend>Add New Vendor</legend>
+
+      <!-- Text input-->
+
+      <div class="form-group">
+        <label class="col-md-4 control-label" >Host IP Address</label>  
+        <div class="col-md-4">
+        <input id="textinput" name="host_ip_address" class="form-control input-md" type="text">          
+        </div>
+      </div>
+
+      <div class="newItersDiv"></div>
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="textarea">Add Entity</label>
+        <div class="col-md-4">                     
+          <input type="button" name="" value="Add New Entity" class="add_new_entity">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="textarea">Save Settings</label>
+        <div class="col-md-4">                     
+          <input type="submit" name="">
+        </div>
+      </div>
+      
+
+      </fieldset>
+    </form>
+
+    
+  </div>
+</main>
+
+<script type="text/javascript">
+
+function GetURLParameter(sParam){
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++){
+      var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam){
+          return $.trim(sParameterName[1]);
+        }
+    }
+}
+
+$(function(){
+
+  var host_ip = GetURLParameter('host_ip')
+  document.getElementById('textinput').value = host_ip;
+
+  function generateNewHtml(){
+    var html = '';
+    html += '<div class="main">';
+    html += '<hr>';
+    html += '<a href="#" class="remove_box">Delete</a>';
+    html += '<div class="form-group">';
+    html += '<div class="col-md-4">';
+    html += '<select id="selectbasic" name="vpn_provider[]" class="form-control">';
+    html += '<option value="purevpn">Purevpn</option>';
+    html += '<option value="expressvpn">Express VPN</option>';
+    html += '<option value="ipvanish">IPVanish</option>';
+    html += '<option value="nordvpn">NordVPN</option>';
+    html += '</select>';
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="form-group">';
+    html += '<label class="col-md-4 control-label" >Destination Address</label>  ';
+    html += '<div class="col-md-12">';
+    html += '<input id="textinput" name="dest_address[]" placeholder="" class="form-control input-md" type="text">';
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="form-group">';
+    html += '<label class="col-md-4 control-label" >Protocol</label>  ';
+    html += '<div class="col-md-4">';
+    html += '<select id="selectbasic" name="vpn_protocol[]" class="form-control">';
+    html += '<option value="udp">UDP</option>';
+    html += '<option value="tcp">TCP</option>';
+    html += '</select>';
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="form-group">';
+    html += '<label class="col-md-4 control-label" >Port</label>  ';
+    html += '<div class="col-md-4">';
+    html += '<input id="textinput" name="vpn_port[]" placeholder="" class="form-control input-md" type="text">';
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="form-group">';
+    html += '<label class="col-md-4 control-label" >Download File 1</label>  ';
+    html += '<div class="col-md-12">';
+    html += '<input id="textinput" name="download_file_1[]" placeholder="" class="form-control input-md" type="text">';
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="form-group">';
+    html += '<label class="col-md-4 control-label" >Download File 2</label>  ';
+    html += '<div class="col-md-12">';
+    html += '<input id="textinput" name="download_file_2[]" placeholder="" class="form-control input-md" type="text">';
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="form-group">';
+    html += '<label class="col-md-4 control-label" >Config (Leave Empty in case of PureVPN)</label>  ';
+    html += '<div class="col-md-12">';
+    html += '<textarea style="width:100%;min-height:200px;font-size:11px;" name="config[]"></textarea>';
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+    return html
+  }
+
+  $(".add_new_entity").click(function(){
+      $(".newItersDiv").append(generateNewHtml())
+  });
+
+
+  $( "body" ).delegate( "a.remove_box", "click", function() {
+    $this = $(this)
+    $this.parent().remove()
+  });
+
+})
+</script>
+{% include 'core_footer.html' %}
+  

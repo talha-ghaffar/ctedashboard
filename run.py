@@ -194,7 +194,6 @@ def add_iteration():
             "machine_notes":machine_notes,
         });
 
-    
 
         machine_iterations = app.data.driver.db['machine_iterations']
         for x in range(len(dest_address)):
@@ -306,6 +305,48 @@ def ip_whitelist():
         return json.dumps(True)
     else:
         return render_template('tpl-ip-whitelist.html')
+
+
+
+
+
+
+@app.route('/add-vendor', methods=['GET', 'POST'])
+def add_vendor():
+    if request.method == 'POST':
+        host_id = request.args.get("id")
+        host_address        = request.form['host_ip_address']
+        vpn_provider        = request.form.getlist('vpn_provider[]')
+        vpn_portocol        = request.form.getlist('vpn_protocol[]')
+        dest_address       = request.form.getlist('dest_address[]')
+        vpn_port       = request.form.getlist('vpn_port[]')
+        download_file_1       = request.form.getlist('download_file_1[]')
+        download_file_2       = request.form.getlist('download_file_2[]')
+        config       = request.form.getlist('config[]')
+
+        res = db.host_machines.find_one_and_update(
+            { '_id': ObjectId(host_id)},
+            { '$set': { 'host_address':host_address } },
+            upsert=True,
+        )        
+        
+        machine_iterations = app.data.driver.db['machine_iterations']
+        
+        for x in range(len(dest_address)):
+            machine_iteration = machine_iterations.insert({
+                "host_id":ObjectId(host_id),
+                "vpn_provider":vpn_provider[x],
+                "vpn_portocol":vpn_portocol[x],
+                "dest_address":dest_address[x],
+                "vpn_port":vpn_port[x],
+                "download_file_1":download_file_1[x],
+                "download_file_2":download_file_2[x],
+                "config":config[x]
+            });
+        return redirect(url_for('list_iterations'))
+    else:
+        return render_template('tpl-add-vendor.html')
+
 
 
 if __name__ == '__main__':
