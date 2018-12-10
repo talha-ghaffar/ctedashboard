@@ -328,7 +328,7 @@ def add_vendor():
             { '_id': ObjectId(host_id)},
             { '$set': { 'host_address':host_address } },
             upsert=True,
-        )        
+        )
         
         machine_iterations = app.data.driver.db['machine_iterations']
         
@@ -346,6 +346,23 @@ def add_vendor():
         return redirect(url_for('list_iterations'))
     else:
         return render_template('tpl-add-vendor.html')
+
+
+
+
+@app.route('/ip-edit', methods=['GET', 'POST'])
+def ip_edit():
+    if request.method == 'POST':
+        host_id = request.form['name']
+        host_address = request.form['value']
+        res = db.host_machines.find_one_and_update(
+            { '_id': ObjectId(host_id)},
+            { '$set': { 'host_address':host_address } },
+            upsert=True,
+        )
+        return json.dumps(True)
+    else:
+        return render_template('tpl-ip-whitelist.html')
 
 
 

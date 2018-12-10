@@ -1,16 +1,25 @@
 {% include 'core_header.html' %}
 
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+
+
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" >
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
     <h1 class="h2">List Jobs</h1>
 
   </div>
+
   <div class="table-responsive">
 
   	{% if result.show_details is defined %}
 
   		{{ result.host_machine._id }} <br>
-  		{{ result.host_machine.host_address }} <br>
+
+  		<td><a href="#" class="edit" id={{ result.host_machine._id }}  >{{ result.host_machine.host_address }}</a></td>
+
+  		<br>
   		{{ result.host_machine.machine_notes }}
   		<td><a class="pull-right" target="_blank" href="/add-vendor?&id={{ result.host_machine._id }}&host_ip={{ result.host_machine.host_address }}">Add Vendor</a></td><br>
   		<br>  		
@@ -67,18 +76,28 @@
 	    </table>
 
   	{% endif %}
-
-    
    
     
   </div>
+
 </main>
 
 <script type="text/javascript">
 
-$(function(){
-  
-})
+$(document).ready(function(){
+
+
+    $('.edit').editable({
+    	mode: 'inline',
+        type: 'text',
+        pk: 1,
+        url: '/ip-edit'
+    });
+
+
+
+});
+
 </script>
 {% include 'core_footer.html' %}
   
