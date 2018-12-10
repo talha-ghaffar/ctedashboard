@@ -5,6 +5,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 
 
+
+
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" >
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
     <h1 class="h2">List Jobs</h1>
@@ -93,6 +95,9 @@ $(document).ready(function(){
         pk: 1,
         url: '/ip-edit'
     });
+
+	$.fn.editableform.buttons = 
+ '<button type="submit" class="btn btn-primary btn-sm editable-submit" style="margin:5px;"><i> OK </i></button>' + '<button type="submit" class="btn btn-primary btn-sm editable-submit"><i> X </i></button>';         
 
 
 
