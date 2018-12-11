@@ -49,11 +49,12 @@
 	          <td>{{ item.download_file_2 }}</td>
 	          <td><a target="_blank" href="/view-config/{{ item._id }}">View Config</a></td>
 	          <!-- <td><a target="_blank" href="/update-record/{{ item._id }}"><i class='fa fa-pencil-square-o' aria-hidden='true'></i></a></td> -->
-	          <td><a target="_blank" href="/update-record?&id={{ item._id }}"><i class='fa fa-pencil-square-o' aria-hidden='true'></i></a> | <a target="_blank" href="/delete-job/{{ item._id }}"><i class='fa fa-trash' aria-hidden='true'></i></a></td>	          
+	          <td><a target="_blank" href="/update-record?&id={{ item._id }}"><i class='fa fa-pencil-square-o' aria-hidden='true'></i></a> | <a target="_blank" href="/delete-job/{{ item._id }}" onclick="return confirm('Are you sure, You want to Delete the record?')"><i class='fa fa-trash' aria-hidden='true'></i></a></td>	          
 	        </tr>
 	      {% endfor %}
 	    </table>
   	{% else %}
+
 
 	  	<table class="table">
 	        <thead>
@@ -71,7 +72,7 @@
 	          <td>{{ item.machine_notes }}</td>
 	          <td>
 	            <a href="/list-iterations/{{ item._id }}">Open</a>&nbsp;|&nbsp;
-	            <a href="/delete-iterations/{{ item._id }}">Delete</a>
+	            <a href="/delete-iterations/{{ item._id }}" onclick="return confirm('Are you sure, You want to Delete the record?')">Delete</a>
 	          </td>
 	        </tr>
 	      {% endfor %}
@@ -97,9 +98,7 @@ $(document).ready(function(){
     });
 
 	$.fn.editableform.buttons = 
- '<button type="submit" class="btn btn-primary btn-sm editable-submit" style="margin:5px;"><i> OK </i></button>' + '<button type="submit" class="btn btn-primary btn-sm editable-submit"><i> X </i></button>';         
-
-
+ '<button type="submit" class="btn btn-primary btn-sm editable-submit" style="margin:5px;"><i> OK </i></button>' + '<button type="submit" class="btn btn-primary btn-sm editable-submit"><i> X </i></button>';
 
 });
 
