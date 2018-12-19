@@ -25,18 +25,20 @@ table.bottom_table{
         <tr class="loader"><td colspan="20" style="text-align: center;"><i class="fas fa-spin fa-2x fa-sync"></i></td></tr>
       </tbody>
     </table>
-    <table class="table table-responsive table-striped table-sm bottom_table">
+    <table class="table table-striped table-responsive table-sm bottom_table mytable">
       <thead>
         <tr>
           <th scope="col" width="1%">#</th>
           <th scope="col">Vendor</th>
-          <th scope="col" title="Base Download Speed for Static URL">BDS Static</th>
-          <th scope="col" title="Base Download Speed for CDN URL">BDS CDN</th>
+          <th scope="col" title="Base Download Speed for Static URL">Download-1</th>
+          <th scope="col" title="Base Download Speed for CDN URL">Download-2</th>
           <th scope="col">DNS</th>
           <th scope="col">Latency</th>
           <th scope="col" width="5%">Connection</th>
-          <th scope="col">Static Speed</th>
-          <th scope="col">CDN Speed</th>
+          <th scope="col">Download-1</th>
+          <th scope="col">Ratio-1</th>
+          <th scope="col">Download-2</th>
+          <th scope="col">Ratio-2</th>
           <th scope="col" title="Connection Time">C.Time</th>
           <th scope="col" title="Iteration Time">I.Time</th>
         </tr>
@@ -66,6 +68,11 @@ $(function(){
         crossDomain: true,
         success: function(data, status, xhr) {
           $('tr.loader').remove();
+
+            //console.log(data)
+            //return false;
+
+
             $(".main_title span").html(data.SELF_IP)
             tmpl  = ''
             tmpl  = "<tr id='" + data._id + "'> \
@@ -78,30 +85,142 @@ $(function(){
             i=0
 
             
+
+
+                    // var count = 0;
+                    // var index = [];
+                    // var final_array = [];
+                    // var pure_speed_before = [];              
+
+                    
+                    // for (var j=1; j<data.NumberOfComparisionJobs; j++) {
+
+                    //   if (RemoveUndefined(data['VENDER_'+(j-1)]) == "purevpn"){
+                    //     count = count + 1;
+                    //     index.push(j)
+                    //   }
+                    
+                    // }
+
+                    // //console.log(index)
+                    // var in_coun_1 = 0;
+                    // var in_coun_2 = 1;
+
+
+                    // for (var k=1; k<=count; k++) {
+
+
+                    //   pure_speed_before.push(RemoveUndefined(data['SPEED_STATIC_MB_'+(index[in_coun_1]-1) ]))
+
+                                            
+                    //   this["list_"+k] = [];
+
+                    //   for (var counter=index[in_coun_1] ; counter<index[in_coun_2]-1; counter++) {
+
+
+                    //       this["list_"+k].push(data['SPEED_STATIC_MB_'+(counter)])
+
+                    //   }                      
+
+                    // if (k == count){
+                    //   for (var counter=index[count-1] ; counter<data.NumberOfComparisionJobs; counter++) {
+                    //     this["list_"+k].push(data['SPEED_STATIC_MB_'+(counter)])
+                    //   }
+                    // }
+        
+                    //   in_coun_1 = in_coun_1 + 1;
+                    //   in_coun_2 = in_coun_2 + 1;
+
+                    //   //console.log(this["list_"+k])
+
+                    //   final_array.push(this["list_"+k])                  
+                      
+                    // }
+
+                    // console.log(final_array)                    
+                    // console.log(pure_speed_before)
+
+
+
             var i;
             var threshold=0
-            for (i = 0; i < 100; i++) {
+            for (i = 0; i < data.NumberOfComparisionJobs; i++) {
 
                 if (typeof data['VENDER_'+i] === 'undefined'){
                   threshold=threshold+1
                   //continue
                 }
+
+                
+
+
+                var pure_result = "";
+                
+                var warning_css = "";
+                if(RemoveUndefined(data['VENDER_'+i]) == "purevpn"){
+                  warning_css = 'bgcolor="#c5c5c5"';
+
+                  pure_result = 'style="visibility:hidden"';
+                  //pure_result = 'id="b_ratio"';                  
+
+                }
+
+
+
+
+                if(RemoveUndefined(data['VENDER_'+i]) == "purevpn"){
+
+                    var pure_speed_before = RemoveUndefined(data['SPEED_STATIC_MB_'+i])
+                    var pure_speed_after = RemoveUndefined(data['SPEED_CACHE_MB_'+i])
+                    
+
+                    var ratio_list_b = [];
+                    var ratio_list_a = [];
+                    ratio_list_b.push("");
+                    ratio_list_a.push("");
+
+                    for (var j=1; j<data.NumberOfComparisionJobs; j++) {
+
+                      var ratio_b = 100 - (parseFloat(pure_speed_before)/parseFloat(RemoveUndefined(data['SPEED_STATIC_MB_'+(j)])) * 100);
+
+
+                      var ratio_a = 100 - (parseFloat(pure_speed_after)/parseFloat(RemoveUndefined(data['SPEED_CACHE_MB_'+(j)])) * 100);
+
+                    
+                      ratio_list_b.push(ratio_b.toFixed(2)+' %')
+                      ratio_list_a.push(ratio_a.toFixed(2)+' %')
+
+                    
+                    }
+                    //console.log(ratio_list_b)
+                }
+
+
+
+
                 tmpl2="";
                 tmpl2="<tr> \
                 <th scope='row'>"+ (i+1) +"</th> \
-                <td>"+ RemoveUndefined(data['VENDER_'+i]) +"</td> \
+                <td "+warning_css+">"+ RemoveUndefined(data['VENDER_'+i]) +"</td> \
                 <td><a href='"+RemoveUndefined(data['URL_STATIC_'+i])+"'>"+ RemoveUndefined(data['BASE_DOWNLOAD_SPEED_STATIC_MB_'+i]) +"</a></td> \
                 <td><a href='"+RemoveUndefined(data['URL_CDN_'+i])+"'>"+ RemoveUndefined(data['BASE_DOWNLOAD_SPEED_CDN_MB_'+i]) +"</a></td> \
                 <td>"+ RemoveUndefined(data['DIALINGDNS_'+i]) +"</td> \
                 <td>"+ RemoveUndefined(data['PING_LATENCY_'+i]) +"</td> \
                 <td>"+ RemoveUndefined(data['CONNECTION_'+i]) +"</td> \
                 <td><a href='"+RemoveUndefined(data['URL_STATIC_'+i])+"'>"+ RemoveUndefined(data['SPEED_STATIC_MB_'+i]) +"</a></td> \
+                <td "+pure_result+"><a title='100 - ("+pure_speed_before+" / "+RemoveUndefined(data['SPEED_STATIC_MB_'+i])+ " * 100)' href='"+RemoveUndefined(ratio_list_b[i])+"'>"+RemoveUndefined(ratio_list_b[i])+"</a></td> \
                 <td><a href='"+RemoveUndefined(data['URL_CDN_'+i])+"'>"+ RemoveUndefined(data['SPEED_CACHE_MB_'+i]) +"</a></td> \
+                <td "+pure_result+"><a title='100 - ("+pure_speed_after+" / "+RemoveUndefined(data['SPEED_CACHE_MB_'+i])+ " * 100)' href='"+RemoveUndefined(ratio_list_a[i])+"'>"+RemoveUndefined(ratio_list_a[i])+"</a></td> \
                 <td>"+ RemoveUndefined(data['CONNECTION_TIME_'+i]) +"</td> \
                 <td>"+ RemoveUndefined(data['ITERATION_TIME_DIFF_'+i]) +"</td> \
                 </tr>"
                 $("table.bottom_table tbody").append(tmpl2);
                 //if (threshold>=5){ break; }
+
+
+                //document.getElementById('b_ratio').textContent = "-";
+
+
             } 
         }
     });
