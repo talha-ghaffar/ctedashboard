@@ -18,7 +18,6 @@ data = {
   'schema': { '_id': { 'type': 'string' } }
 }
 
-
 data2 = {
   'allow_unknown': True,
   'item_title': 'logs',
@@ -29,9 +28,18 @@ data2 = {
   'schema': { '_id': { 'type': 'string' } }
 }
 
-
+data3 = {
+  'allow_unknown': True,
+  'item_title': 'logs',
+  'id_field': '_id',
+  'item_url': 'regex("[a-zA-Z0-9.-]+")',
+  'cache_control': 'max-age=10,must-revalidate',
+  'cache_expires': 1,
+  'schema': { '_id': { 'type': 'string' } }
+}
 
 DOMAIN = {
     'api': data,
     'api2': data2,
+    'ratiocompare': data3,
 }
