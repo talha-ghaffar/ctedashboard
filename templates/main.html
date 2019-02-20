@@ -39,7 +39,7 @@
 $(function(){
   var_max_results = 25
   page      = GetURLParameter('page');
-  posturl = '/api?&sort=[("_updated", -1)]&max_results='+var_max_results+'&page='+page
+  posturl = '/api2?&sort=[("_updated", -1)]&max_results='+var_max_results+'&page='+page
 
   $.ajax({
       type: "GET",
@@ -58,7 +58,7 @@ $(function(){
               var pagevar = (i + 1) + ((current_page - 1) * var_max_results)
               tmpl = "<tr id='" + item._id + "'> \
                 <td>" + pagevar + "</td> \
-                <td><a href='/iteration-details?id="+item._id+"'>" + item.SELF_IP + "</a></td> \
+                <td><a href='/test-iteration-details?id="+item._id+"'>" + item.SELF_IP + "</a></td> \
                 <td>" + RemoveUndefined(item.Notes) + "</td> \
                 <td>" + item.NumberOfComparisionJobs + "</td> \
                 <td class='timeago' title='"+item._created+"'>" + item._created + "</td> \
@@ -109,7 +109,7 @@ $(function(){
         var settings = {
           "async": true,
           "crossDomain": true,
-          "url": "/api/"+id,
+          "url": "/api2/"+id,
           "method": "DELETE",
         }
 

@@ -62,6 +62,29 @@ def iteration_details():
     return render_template('tpl-iteration-details.html')
 
 
+
+
+@app.route('/test-iteration-details')
+@login_required
+def test_iteration_details():
+    return render_template('testing_iteration-details.html')
+
+@app.route('/test-ratio-compare')
+@login_required
+def test_ratio_compare():
+    return render_template('ratiocompare.html')
+
+
+@app.route('/country-list')
+def country_list():
+    import requests
+    url = "http://tester.pointtoserver.com:5000/sre-country-list"
+    headers = {
+    'cache-control': "no-cache"
+    }
+    response = requests.request("GET", url, headers=headers)
+    return json.loads(json.dumps(response.text))
+
 @app.route('/list-iterations')
 @app.route('/list-iterations/<iteration_id>')
 @login_required
@@ -120,7 +143,7 @@ def get_job_details(jid):
             val['dest_address'] = line['dest_address']
             val['vpn_provider'] = line['vpn_provider']
             val['vpn_port'] = line['vpn_port']
-            val['config'] = line['config']
+            val['config'] = line['config']            
             string.append(val)
         final['jobdetails'] = string
         #print final
@@ -130,7 +153,7 @@ def get_job_details(jid):
         content=request.get_json()        
         res = db.machine_iterations.find_one_and_update(
             { '_id': ObjectId(jid)},
-            { '$set': { 'download_file_1':content['download_file_1'], 'download_file_2':content['download_file_2'], 'vpn_portocol':content['vpn_portocol'], 'dest_address':content['dest_address'], 'vpn_port':content['vpn_port'], 'vpn_provider':content['vpn_provider'], 'config':content['config'] } },
+            { '$set': { 'download_file_1':content['download_file_1'], 'download_file_2':content['download_file_2'], 'vpn_portocol':content['vpn_portocol'], 'dest_address':content['dest_address'], 'vpn_port':content['vpn_port'], 'vpn_provider':content['vpn_provider'], 'config':content['config'], 'dest_country':content['dest_country'] } },
             upsert=True,
         )
         return json.dumps(True)
@@ -183,6 +206,7 @@ def add_iteration():
         vpn_provider        = request.form.getlist('vpn_provider[]')
         vpn_portocol        = request.form.getlist('vpn_protocol[]')
         dest_address       = request.form.getlist('dest_address[]')
+        dest_country       = request.form.getlist('dest_country[]')
         vpn_port       = request.form.getlist('vpn_port[]')
         download_file_1       = request.form.getlist('download_file_1[]')
         download_file_2       = request.form.getlist('download_file_2[]')
@@ -202,6 +226,7 @@ def add_iteration():
                 "vpn_provider":vpn_provider[x],
                 "vpn_portocol":vpn_portocol[x],
                 "dest_address":dest_address[x],
+                "dest_country":dest_country[x],
                 "vpn_port":vpn_port[x],
                 "download_file_1":download_file_1[x],
                 "download_file_2":download_file_2[x],

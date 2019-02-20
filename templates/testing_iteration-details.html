@@ -1,0 +1,127 @@
+{% include 'core_header.html' %}
+<style type="text/css">
+
+table.bottom_table{
+  font-size: 11px;
+}  
+
+</style>
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+    <h1 class="h2 main_title">Iteration Details For <a href=''><span>999.999.999.999</span></a> <a href="#" onclick="location.reload()"><i class="fas fa-sync-alt"></i></a></h1>
+  </div>
+  
+  <div class="table-responsive">
+    <table class="table table-striped table-sm top_table">
+      <thead>
+        <tr>
+          <th>Source IP</th>
+          <th>Source Location</th>
+          <th>Notes</th>
+          <th>No. of Comparisons</th>          
+          <th>Date &amp; Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="loader"><td colspan="20" style="text-align: center;"><i class="fas fa-spin fa-2x fa-sync"></i></td></tr>
+      </tbody>
+    </table>
+    <table class="table table-responsive table-sm bottom_table mytable">
+    <!--table-striped-->
+      <thead>
+        <tr>
+          <th scope="col" width="1%">#</th>
+          <th scope="col">Vendor</th>
+          <th scope="col">Destination</th>          
+          <th scope="col" title="Base Download Speed for Static URL">Download-1</th>
+          <th scope="col" title="Base Download Speed for CDN URL">Download-2</th>
+          <th scope="col">DNS</th>
+          <th scope="col">Latency</th>
+          <th scope="col" width="5%">Connection</th>
+          <th scope="col">Download-1</th>
+          <th scope="col">Ratio-1</th>
+          <th scope="col">Download-2</th>
+          <th scope="col">Ratio-2</th>
+<!--           <th scope="col" title="Connection Time">C.Time</th>
+          <th scope="col" title="Iteration Time">I.Time</th>
+ -->        </tr>
+      </thead>
+      <tbody>
+        <tr class="loader"><td colspan="20" style="text-align: center;"><i class="fas fa-spin fa-2x fa-sync"></i></td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<script type="text/javascript">
+
+$(function(){
+
+
+  iid      = GetURLParameter('id');
+  if(iid){
+    url = '/api2/'+iid
+    $.ajax({
+        type: "GET",
+        url: url,
+        async: true,
+        dataType: 'json',
+        crossDomain: true,
+        success: function(data, status, xhr) {
+          $('tr.loader').remove();
+
+            $(".main_title span").html(data.SELF_IP)
+            tmpl  = ''
+            tmpl  = "<tr id='" + data._id + "'> \
+            <td>" + data.SELF_IP + "</td> \
+            <td>" + data.SOURCE_LOCATION + "</td> \
+            <td>" + data.Notes + "</td> \
+            <td>" + data.NumberOfComparisionJobs + "</td> \
+            <td>" + data._created + "</td> \
+            </tr>"
+            $("table.top_table tbody").append(tmpl);
+            //i=0
+
+
+            var i;
+
+            for (i = 0; i < data.NumberOfComparisionJobs; i++) {
+
+                var warning_css = "";
+                if(RemoveUndefined(data['results_'+i].VENDER) == "purevpn"){
+                  warning_css = 'bgcolor="#daffdb"';
+                  var pure_speed_before = RemoveUndefined(data['results_'+i].SPEED_STATIC_MB)
+                  var pure_speed_after = RemoveUndefined(data['results_'+i].SPEED_CACHE_MB)
+                }
+
+
+                tmpl2="";
+                tmpl2="<tr "+warning_css+" > \
+                <th scope='row'>"+ (i+1) +"</th> \
+                <td>"+ RemoveUndefined(data['results_'+i].VENDER) +"</td> \
+                <td>"+ RemoveUndefined(data['results_'+i].DESTINATION_COUNTRY) +"</td> \
+                <td>"+ RemoveUndefined(data['results_'+i].BASE_DOWNLOAD_SPEED_STATIC_MB) +"</td> \
+                <td>"+ RemoveUndefined(data['results_'+i].BASE_DOWNLOAD_SPEED_CDN_MB) +"</td> \
+                <td>"+ RemoveUndefined(data['results_'+i].DIALINGDNS) +"</td> \
+                <td>"+ RemoveUndefined(data['results_'+i].PING_LATENCY) +"</td> \
+                <td>"+ RemoveUndefined(data['results_'+i].CONNECTION) +"</td> \
+                <td>"+ RemoveUndefined(data['results_'+i].SPEED_STATIC_MB) +"</td> \
+                <td><a title='100 - ( "+pure_speed_before+" / "+RemoveUndefined(data['results_'+i].SPEED_STATIC_MB)+" * 100)' href='"+ RemoveUndefined(data['results_'+i].ratio_cdn_one) +"'>"+ RemoveUndefined(data['results_'+i].ratio_cdn_one) +"</a></td> \
+                <td>"+ RemoveUndefined(data['results_'+i].SPEED_CACHE_MB) +"</td> \
+                <td><a title='100 - ( "+pure_speed_after+" / "+RemoveUndefined(data['results_'+i].SPEED_CACHE_MB)+" * 100)' href='"+ RemoveUndefined(data['results_'+i].ratio_cdn_two) +"'>"+ RemoveUndefined(data['results_'+i].ratio_cdn_two) +"</a></td> \
+                </tr>"
+                $("table.bottom_table tbody").append(tmpl2);
+
+            } 
+                //<td>"+ RemoveUndefined(data['results_'+i].ratio_cdn_one) +"</td> \
+        }
+ 
+    });
+  }
+
+  
+})
+</script>
+
+{% include 'core_footer.html' %}
+  

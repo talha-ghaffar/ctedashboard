@@ -42,6 +42,12 @@
       </li>
 
 
+      <li class="nav-item">
+        <a {%- if request.path == "/test-ratio-compare" %} class='nav-link active' {% else %} class='nav-link' {% endif %} href="/test-ratio-compare">
+          <span data-feather="list"></span>
+          Ratio Degradation Stats
+        </a>
+      </li>
 
       <li class="nav-item">
         <a {%- if request.path == "/help" %} class='nav-link active' {% else %} class='nav-link' {% endif %} href="/help">

@@ -47,7 +47,18 @@
 			        </div>			    				        
 				
 				</div>
-			</div>		  
+			</div>
+
+			<div class="col-md-6">
+				<div class="bs-example" data-example-id="basic-forms">
+			        <div class="form-group">
+			            <label>Destination Country</label>
+			            <input class="form-control" type="text" id="destination_country">
+			        </div>			    				        
+				
+				</div>
+			</div>
+
 			<div class="col-md-6">
 				<div class="bs-example" data-example-id="basic-forms">
 
@@ -110,7 +121,8 @@ function GetURLParameter(sParam){
 				$("#config").val(data.jobdetails[0].config);
 				$("#destination_address").val(data.jobdetails[0].dest_address);
 				$("#vendor").val(data.jobdetails[0].vpn_provider);
-				$("#protocol").val(data.jobdetails[0].vpn_portocol);				
+				$("#protocol").val(data.jobdetails[0].vpn_portocol);
+				$("#destination_country").val(data.jobdetails[0].dest_country);
 				}
 			});
 
@@ -123,7 +135,8 @@ function GetURLParameter(sParam){
 					config :$("#config").val(),
 					dest_address :$("#destination_address").val(),
 					vpn_provider :$("#vendor").val(),
-					vpn_portocol :$("#protocol").val()
+					vpn_portocol :$("#protocol").val(),
+					dest_country :$("#destination_country").val()
         		}
    				$.ajax({   							
   					data: JSON.stringify(param),		

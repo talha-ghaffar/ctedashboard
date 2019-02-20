@@ -1,0 +1,193 @@
+{% include 'core_header.html' %}
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" >
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+    <h1 class="h2">Ratio Comparsion Results</h1>
+  </div>
+  <div class="table-responsive">
+
+
+<!--     <div class="row">
+      <div class="col-md-4">
+        <select class="form-control"  name="country-select" id="country-select"><option value="0">Select a Country</option></select>
+      </div>
+    </div> -->
+
+
+      <div class="row"> 
+          <div class="col-sm-4 col-md-4 col-xs-4">
+            <form class="navbar-form" role="search" method="get" accept="/" style="padding: 0">
+              {% if request.args.get('search') %}
+                <a class="btn btn-primary " href="/test-ratio-compare" role="button">Back</a>
+              {% else %}
+                <div class="input-group add-on ">
+                  <input name="search"  class="form-control" name="srch-term" id="search" type="text" placeholder="Search Country">            
+                </div>
+              {% endif %}
+            </form>
+          </div>
+      </div>
+
+
+<!-- 
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-start">
+        <li class="page-item prevbtn"><a class="page-link " href="#" tabindex="-1">Previous</a></li>
+        <li class="page-item pageinfo"><a class="page-link" href="#">Total Results</a></li>
+        <li class="page-item nextbtn"><a class="page-link" href="#">Next</a></li>
+      </ul>
+    </nav>
+ -->
+
+    <br>
+    <br>
+    <table class="table table-sm mastertable">
+      <thead>
+        <tr>
+          <th width="1%">#</th>
+          <th>Vendor</th>
+          <th>Source</th>
+          <th>Destination</th>
+          <th>Download-1</th>
+          <th>Download-2</th>
+          <th>DNS</th>
+          <th>Latency</th>
+          <th>Pure Speed</th>          
+          <th>Download-1</th>
+          <th>Ratio-1</th>
+          <th>Download-2</th>
+          <th>Ratio-2</th>
+          <!-- <th>Date &amp; Time</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="loader"><td colspan="20" style="text-align: center;"><i class="fas fa-spin fa-2x fa-sync"></i></td></tr>
+      </tbody>
+    </table>
+    
+  </div>
+</main>
+
+<script type="text/javascript">
+
+$(function(){
+
+function GetURLParameter(sParam){
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++){
+      var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam){
+          return sParameterName[1];
+        }
+    }
+}
+
+  SearchVar     = $.trim(GetURLParameter('search'))
+
+  if(SearchVar){
+    posturl = '/ratiocompare/?where={"SOURCE_LOCATION":"'+SearchVar+'"}&sort=[("_updated", -1)]'
+  }
+  else{
+    posturl = '/ratiocompare?&sort=[("_updated", -1)]'
+  }
+
+
+    $.ajax({
+        type: "GET",
+        url: posturl,
+        async: true,
+        dataType: 'json',
+        crossDomain: true,
+        success: function(data, status, xhr) {
+            // max_results = data._meta.max_results;
+            // total = data._meta.total;
+            // current_page = data._meta.page;
+            // total_pages = Math.ceil(total / max_results)
+            $('tr.loader').remove();
+            var j = 1
+            $.each(data._items, function(i, item) {
+                //var pagevar = (i + 1) + ((current_page - 1) * var_max_results)
+                //console.log(item.VENDOR)
+                //return false;
+                tmpl = "<tr id='" + item._id + "'> \
+                  <td>" + j + "</td> \
+                  <td>" + item.VENDOR + "</td> \
+                  <td>" + item.SOURCE_LOCATION + "</td> \
+                  <td>" + item.DESTINATION_COUNTRY + "</td> \
+                  <td>" + item.BASE_DOWNLOAD_SPEED_STATIC_MB + "</td> \
+                  <td>" + item.BASE_DOWNLOAD_SPEED_CDN_MB + "</td> \
+                  <td>" + item.DNS + "</td> \
+                  <td>" + item.PING_LATENCY + "</td> \
+                  <td>" + item.Pure_Speed + "</td> \
+                  <td>" + item.SPEED_STATIC_MB + "</td> \
+                  <td>" + item.ratio_cdn_one + "</td> \
+                  <td>" + item.SPEED_CACHE_MB + "</td> \
+                  <td>" + item.ratio_cdn_two + "</td> \
+                  </tr>"
+                $("table.mastertable tbody").append(tmpl);
+                j = j + 1;
+            });
+
+            // if (total_pages >= 1) {
+            //     searchItem = "";
+            //     if (current_page > 1) {
+            //         $("ul.pagination li.prevbtn a").attr('href', "?page=" + (current_page - 1) + searchItem)
+            //     } else {
+            //         $("ul.pagination li.prevbtn").addClass('disabled')
+            //     }
+            //     if (current_page != total_pages) {
+            //         $("ul.pagination li.nextbtn a").attr('href', "?page=" + (current_page + 1) + searchItem)
+            //     } else if (current_page == total_pages) {
+            //         $("ul.pagination li.lastbtn").addClass('disabled')
+            //         $("ul.pagination li.nextbtn").addClass('disabled')
+            //     }
+            //     var pagenumber = '<a href="#">Page ' + current_page + ' of ' + total_pages + '. Total Results ' + total + '</a>';
+            //     $("li.pageinfo a").html(pagenumber)
+            // } else {
+            //     $("ul.pagination li.prevbtn").addClass('disabled')
+            //     $("ul.pagination li.lastbtn").addClass('disabled')
+            //     $("ul.pagination li.nextbtn").addClass('disabled')
+            // }
+
+            // $(".timeago").each(function(){
+            //   $(this).html(moment($(this).html()).fromNow())
+            // });
+        }
+    });
+
+  
+
+
+
+  // $("#country-select").change(function() {
+  //   alert('saad')
+  // });
+
+
+
+
+
+
+  // function initializeCountry(){
+  //   $("#country-select").html('<option value="0">Select a Country</option>');
+  //   $.getJSON('/country-list', function(dataCountry) {
+  //     //console.log(dataCountry)
+  //     $.each(dataCountry, function(i, obj) {
+  //       //console.log(obj)
+  //       optionval=''
+  //       optionval='<option value="'+obj+'">'+obj+'</option>'
+  //       $("#country-select").append(optionval);
+  //     });
+  //   });
+  // }
+
+
+  // initializeCountry();
+
+
+
+})
+</script>
+{% include 'core_footer.html' %}
+  
