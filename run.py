@@ -344,6 +344,7 @@ def add_vendor():
         vpn_provider        = request.form.getlist('vpn_provider[]')
         vpn_portocol        = request.form.getlist('vpn_protocol[]')
         dest_address       = request.form.getlist('dest_address[]')
+        dest_country       = request.form.getlist('dest_country[]')
         vpn_port       = request.form.getlist('vpn_port[]')
         download_file_1       = request.form.getlist('download_file_1[]')
         download_file_2       = request.form.getlist('download_file_2[]')
@@ -363,6 +364,7 @@ def add_vendor():
                 "vpn_provider":vpn_provider[x],
                 "vpn_portocol":vpn_portocol[x],
                 "dest_address":dest_address[x],
+                "dest_country":dest_country[x],
                 "vpn_port":vpn_port[x],
                 "download_file_1":download_file_1[x],
                 "download_file_2":download_file_2[x],
