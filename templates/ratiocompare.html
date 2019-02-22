@@ -86,10 +86,11 @@ function GetURLParameter(sParam){
   SearchVar     = $.trim(GetURLParameter('search'))
 
   if(SearchVar){
-    posturl = '/ratiocompare/?where={"SOURCE_LOCATION":"'+SearchVar+'"}&sort=[("_updated", -1)]'
+    //posturl = '/ratiocompare/?where={"SOURCE_LOCATION":"'+SearchVar+'"}&sort=[("_updated", -1)]'
+    posturl = '/ratiocompare/?where={"SOURCE_LOCATION":"'+SearchVar+'"}&sort=[("ratio_cdn_one", -1)]'    
   }
   else{
-    posturl = '/ratiocompare?&sort=[("_updated", -1)]'
+    posturl = '/ratiocompare?&sort=[("ratio_cdn_one", -1)]'
   }
 
 
