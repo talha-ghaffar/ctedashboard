@@ -261,6 +261,7 @@ def get_config(ip):
                 temp = {}
                 temp['vendor'] = lines['vpn_provider']
                 temp['dest_address'] = lines['dest_address']
+                temp['dest_country'] = lines['dest_country']
                 temp['proto'] = lines['vpn_portocol']
                 temp['port'] = lines['vpn_port']
                 temp['download_cdn'] = lines['download_file_1']
@@ -289,23 +290,23 @@ def loginpage():
 	return render_template('login.html', error=error)
 
 
-@app.route('/get-iterations', methods=['GET'])
-def graph_infrastats():
-    data = {}
-    result = db.pingapisources.distinct("country")
-    url = "/api"
-    querystring = {}
-    headers = {}
-    response = requests.request("GET", url, headers=headers, params=querystring)
-    if response.status_code==200:
-        json_data = json.loads(response.text)
-        data['status'] = True
-        data['production']      = int(json_data['body']['production'])
-        data['maintainence']    = int(json_data['body']['maintainence'])
-        data['trashed']         = int(json_data['body']['trashed'])
-    else:
-        data['status'] = False
-    return json.dumps(data)
+# @app.route('/get-iterations', methods=['GET'])
+# def graph_infrastats():
+#     data = {}
+#     result = db.pingapisources.distinct("country")
+#     url = "/api"
+#     querystring = {}
+#     headers = {}
+#     response = requests.request("GET", url, headers=headers, params=querystring)
+#     if response.status_code==200:
+#         json_data = json.loads(response.text)
+#         data['status'] = True
+#         data['production']      = int(json_data['body']['production'])
+#         data['maintainence']    = int(json_data['body']['maintainence'])
+#         data['trashed']         = int(json_data['body']['trashed'])
+#     else:
+#         data['status'] = False
+#     return json.dumps(data)
 
 
 
