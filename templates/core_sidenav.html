@@ -41,11 +41,25 @@
         </a>
       </li>
 
-
+      <!--
       <li class="nav-item">
         <a {%- if request.path == "/test-ratio-compare" %} class='nav-link active' {% else %} class='nav-link' {% endif %} href="/test-ratio-compare">
           <span data-feather="list"></span>
           Ratio Degradation Stats
+        </a>
+      </li>
+      -->
+      <li class="nav-item">
+        <a {%- if request.path == "/test-ratio-compare1" %} class='nav-link active' {% else %} class='nav-link' {% endif %} href="/test-ratio-compare1">
+          <span data-feather="list"></span>
+          Ratio Degradation Stats
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a {%- if request.path == "/customize-query" %} class='nav-link active' {% else %} class='nav-link' {% endif %} href="/customize-query">
+          <span data-feather="clock"></span>
+          Historic Iterations
         </a>
       </li>
 

@@ -12,6 +12,8 @@ from eve import Eve
 from pymongo import MongoClient
 from flask import jsonify
 import json
+import datetime
+import dateutil.parser
 from bson.objectid import ObjectId
 
 client = MongoClient('localhost', 27017);
@@ -61,7 +63,15 @@ def show_help():
 def iteration_details():
     return render_template('tpl-iteration-details.html')
 
+@app.route('/customize-query')
+@login_required
+def customize_query():
+    return render_template('customizequery1.html')
 
+@app.route('/test-ratio-compare1')
+@login_required
+def customize_qu():
+    return render_template('ratiocompare1.html')
 
 
 @app.route('/test-iteration-details')
@@ -237,6 +247,137 @@ def add_iteration():
         return render_template('tpl-add-iteration.html')
 
 
+@app.route('/testing-endpoint', methods=['POST', 'GET'])
+def testing_endpoint():
+    content = []
+    api2 = app.data.driver.db['api2']
+    #ratioCom = app.data.driver.db['ratiocompare']
+
+    content = request.json
+
+    for k, v in content.items():
+        if k == '_selectedCountry':
+            srcCountry = v
+        elif k == '_selectedCity':
+            dstCountry = v
+        elif k == '_stdate':
+            startDate = v
+            startDate = dateutil.parser.parse(startDate)
+
+        elif k == '_endate':
+            endDate = v
+            endDate = dateutil.parser.parse(endDate)
+
+    #try:
+    api2 = app.data.driver.db['api2']
+    #ratioCom = app.data.driver.db['ratiocompare']
+    myquery = {"_updated": {"$gte": startDate, "$lte": endDate}}
+    api  = api2.find(myquery)
+    #print api
+    final = {}
+    string = []
+    i = 0
+    val = {}
+    for line in api:
+        val[i] = line
+
+        for key in line:
+
+          try:
+            if line['SELF_IP'] == srcCountry:
+                val1 = {}
+                val1['SELF_IP'] = line['SELF_IP']
+
+                if 'results_' in key:
+#                        if line[key]['SOURCE_LOCATION'] == srcCountry and line[key]['DESTINATION_COUNTRY'] == dstCountry:
+                    if line[key]['DESTINATION_COUNTRY'] == dstCountry:
+                        val1['datetime'] = line['datetime']
+                        val1['VENDER'] = line[key]['VENDER']
+                        val1['SOURCE_LOCATION'] = line[key]['SOURCE_LOCATION']
+                        val1['DESTINATION_COUNTRY'] = line[key]['DESTINATION_COUNTRY']
+                        val1['BASE_DOWNLOAD_SPEED_STATIC_MB'] = line[key]['BASE_DOWNLOAD_SPEED_STATIC_MB']
+                        val1['BASE_DOWNLOAD_SPEED_CDN_MB'] = line[key]['BASE_DOWNLOAD_SPEED_CDN_MB']
+                        val1['DIALINGDNS'] = line[key]['DIALINGDNS']
+                        val1['PING_LATENCY'] = line[key]['PING_LATENCY']
+                        val1['SPEED_STATIC_MB'] = line[key]['SPEED_STATIC_MB']
+                        val1['ratio_cdn_one'] = line[key]['ratio_cdn_one']
+                        val1['SPEED_CACHE_MB'] = line[key]['SPEED_CACHE_MB']
+                        val1['ratio_cdn_two'] = line[key]['ratio_cdn_two']
+                        string.append(val1)
+                         
+                        # print type(string)
+                        if type(string) == list: 
+                            final['res'] = string
+          except:
+                pass
+
+        i = i+1
+    return jsonify(final)
+    return json.dumps(True)
+
+
+@app.route('/testing-endpoint1', methods=['POST', 'GET'])
+def testing_endpoint1():
+    content = []
+    api2 = app.data.driver.db['ratiocompare']
+
+    content = request.json
+    #print content
+
+    for k, v in content.items():
+        if k == '_selectedCountry':
+            srcCountry = v
+        #elif k == '_selectedCity':
+        #    dstCountry = v
+        elif k == '_stdate':
+            startDate = v
+            startDate = dateutil.parser.parse(startDate)
+            #print startDate
+
+        elif k == '_endate':
+            endDate = v
+            endDate = dateutil.parser.parse(endDate)
+            #print endDate
+
+    #try:
+    #api2 = app.data.driver.db['ratiocompare']
+    #myquery = {"_updated": {"$gte": startDate, "$lte": endDate}}
+    #api  = api2.find(myquery)
+    ratcom = app.data.driver.db['ratiocompare']
+    myquery = {"_updated":{"$gte": startDate, "$lte": endDate} }
+    ratco = ratcom.find(myquery).sort('ratio_cdn_one', -1)
+    #print ratco
+    #print type(api)
+    final = {}
+    string = []
+    i = 0
+    val = {}
+    for line in ratco:
+        val[i] = line
+        #if line['SOURCE_LOCATION'] == srcCountry:
+           
+        val1 = {}
+        val1['_updated'] = line['_updated']
+        val1['VENDOR'] = line['VENDOR']
+        val1['SOURCE_LOCATION'] = line['SOURCE_LOCATION']
+        val1['DESTINATION_COUNTRY'] = line['DESTINATION_COUNTRY']
+        val1['BASE_DOWNLOAD_SPEED_STATIC_MB'] = line['BASE_DOWNLOAD_SPEED_STATIC_MB']
+        val1['BASE_DOWNLOAD_SPEED_CDN_MB'] = line['BASE_DOWNLOAD_SPEED_CDN_MB']
+        val1['DNS'] = line['DNS']
+        val1['PING_LATENCY'] = line['PING_LATENCY']
+        val1['Pure_Speed'] = line['Pure_Speed']
+        val1['SPEED_STATIC_MB'] = line['SPEED_STATIC_MB']
+        val1['ratio_cdn_one'] = line['ratio_cdn_one']
+        val1['SPEED_CACHE_MB'] = line['SPEED_CACHE_MB']
+        val1['ratio_cdn_two'] = line['ratio_cdn_two']
+        string.append(val1)
+
+        final['res'] = string
+
+        i = i+1
+    return jsonify(final)
+    return json.dumps(True)
+
 
 @app.route('/config/<ip>', methods=['GET'])
 #@login_required
@@ -260,8 +401,11 @@ def get_config(ip):
             for lines in machine_iterations:
                 temp = {}
                 temp['vendor'] = lines['vpn_provider']
+		print temp['vendor']
                 temp['dest_address'] = lines['dest_address']
+		print temp['dest_address']
                 temp['dest_country'] = lines['dest_country']
+		print temp['dest_country']
                 temp['proto'] = lines['vpn_portocol']
                 temp['port'] = lines['vpn_port']
                 temp['download_cdn'] = lines['download_file_1']
@@ -333,10 +477,6 @@ def ip_whitelist():
         return render_template('tpl-ip-whitelist.html')
 
 
-
-
-
-
 @app.route('/add-vendor', methods=['GET', 'POST'])
 def add_vendor():
     if request.method == 'POST':
@@ -365,7 +505,6 @@ def add_vendor():
                 "vpn_provider":vpn_provider[x],
                 "vpn_portocol":vpn_portocol[x],
                 "dest_address":dest_address[x],
-                "dest_country":dest_country[x],
                 "vpn_port":vpn_port[x],
                 "download_file_1":download_file_1[x],
                 "download_file_2":download_file_2[x],

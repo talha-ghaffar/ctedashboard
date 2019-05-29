@@ -1,0 +1,131 @@
+i<!-- ** DEVELOPED BY MUHAMMAD TALHA GHAFFAR <m.talhagt@gmail.com> ** -->
+
+{% include 'core_header.html' %}
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" >
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+    <h1 class="h2">Ratio Degradation Stats</h1>
+  </div>
+  <div class="table-responsive">
+
+      <div class="row">
+          <div class="col-sm-4 col-md-4 col-xs-4">
+            <form class="navbar-form" role="search" method="get" accept="/" style="padding: 0">
+              {% if request.args.get('search') %}
+                <a class="btn btn-primary " href="/test-ratio-compare" role="button">Back</a>
+              {% else %}
+                <div class="input-group add-on ">
+                  <!--<input name="search_src"  class="form-control"  id="search_src" type="text" placeholder="Enter Source"> &emsp;
+                  <input name="search_dst"  class="form-control"  id="search_dst" type="text" placeholder="Enter Destination"> &emsp;-->
+                </div>
+
+                <input id="StartDate" type="date" value="Start Date">
+                <input id="EndDate" type="date" value="End Date">
+
+              {% endif %}
+            </form>
+          </div>
+      </div>
+
+      <div class="col-md-4">
+        <input type="button" name="btn" id="btn" value="Get Records" class="get_records">
+      </div>
+
+    <br>
+    <br>
+    <table class="table table-sm mastertable">
+      <thead>
+        <tr>
+          <th width="1%">#</th>
+          <th>Vendor</th>
+          <th>Source</th>
+          <th>Destination</th>
+          <th>Download-1</th>
+          <th>Download-2</th>
+          <th>DNS</th>
+          <th>Latency</th>
+          <th>Pure Speed</th>
+          <th>Download-1</th>
+          <th>Ratio-1</th>
+          <th>Download-2</th>
+          <th>Ratio-2</th>
+          <th>Date</th>
+          <!-- <th>Date &amp; Time</th> -->
+        </tr>
+      </thead>
+      <tbody>
+      <!--  <tr class="loader"><td colspan="20" style="text-align: center;"><i class="fas fa-spin fa-2x fa-sync"></i></td></tr>-->
+      </tbody>
+    </table>
+
+  </div>
+</main>
+
+<script type="text/javascript">
+
+$(function(){
+
+function GetURLParameter(sParam){
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++){
+      var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam){
+          return sParameterName[1];
+        }
+    }
+}
+
+var array = ''
+  $("#btn").click(function(){
+    $("table.mastertable tbody").html('<tr class="loader"><td colspan="13" style="text-align: center;"><i class="fa fa-refresh fa-spin fa-3x fa-fw" aria-hidden="true"></i></td></tr>');
+    var params = {
+       // _selectedCountry: $("#search_src").val(),
+        //_selectedCity: $("#search_dst").val(),
+        _stdate: $("#StartDate").val(),
+        _endate: $("#EndDate").val()
+      
+    	}
+
+      var array = JSON.stringify(params)
+      $.ajax({
+          type: "POST",
+          url: '/testing-endpoint1',
+          headers: { "Content-Type": "application/json"},
+          async: true,
+          data: array,
+          dataType: 'json',
+          success: function(data, status, xhr) {
+              $('tr.loader').remove();
+              $("table.mastertable tbody").html("");
+              var j = 1
+              $.each(data.res, function(i, item) {
+                  tmpl = "<tr id='" + item._id + "'> \
+                    <td>" + j + "</td> \
+                    <td>" + item.VENDOR + "</td> \
+                    <td>" + item.SOURCE_LOCATION + "</td> \
+                    <td>" + item.DESTINATION_COUNTRY + "</td> \
+                    <td>" + item.BASE_DOWNLOAD_SPEED_STATIC_MB + "</td> \
+                    <td>" + item.BASE_DOWNLOAD_SPEED_CDN_MB + "</td> \
+                    <td>" + item.DNS + "</td> \
+                    <td>" + item.PING_LATENCY + "</td> \
+                    <td>" + item.Pure_Speed + "</td> \
+                    <td>" + item.SPEED_STATIC_MB + "</td> \
+                    <td>" + item.ratio_cdn_one + "</td> \
+                    <td>" + item.SPEED_CACHE_MB + "</td> \
+                    <td>" + item.ratio_cdn_two + "</td> \
+                    <td>" + item._updated + "</td> \
+                    </tr>"
+                  $("table.mastertable tbody").append(tmpl);
+                  j = j + 1;
+              });
+
+  	      }
+       });
+
+    });
+
+})
+</script>
+{% include 'core_footer.html' %}
+
