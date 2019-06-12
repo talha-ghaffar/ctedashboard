@@ -151,8 +151,13 @@ def get_job_details(jid):
             val['download_file_1'] = line['download_file_1']
             val['vpn_portocol'] = line['vpn_portocol']
             val['dest_address'] = line['dest_address']
+	    val['dest_country'] = line['dest_country']
             val['vpn_provider'] = line['vpn_provider']
             val['vpn_port'] = line['vpn_port']
+	    #if line['iperf_server']:
+            	#val['iperf_server'] = line['iperf_server']
+            #if line['iperf_sessions']: 
+		#val['iperf_sessions'] = line['iperf_sessions']
             val['config'] = line['config']            
             string.append(val)
         final['jobdetails'] = string
@@ -163,7 +168,7 @@ def get_job_details(jid):
         content=request.get_json()        
         res = db.machine_iterations.find_one_and_update(
             { '_id': ObjectId(jid)},
-            { '$set': { 'download_file_1':content['download_file_1'], 'download_file_2':content['download_file_2'], 'vpn_portocol':content['vpn_portocol'], 'dest_address':content['dest_address'], 'vpn_port':content['vpn_port'], 'vpn_provider':content['vpn_provider'], 'config':content['config'], 'dest_country':content['dest_country'] } },
+            { '$set': { 'download_file_1':content['download_file_1'], 'download_file_2':content['download_file_2'], 'vpn_portocol':content['vpn_portocol'], 'dest_address':content['dest_address'], 'vpn_port':content['vpn_port'], 'vpn_provider':content['vpn_provider'], 'config':content['config'], 'dest_country':content['dest_country'], 'iperf_server':content['iperf_server'], 'iperf_sessions':content['iperf_sessions'] } },
             upsert=True,
         )
         return json.dumps(True)
@@ -220,6 +225,8 @@ def add_iteration():
         vpn_port       = request.form.getlist('vpn_port[]')
         download_file_1       = request.form.getlist('download_file_1[]')
         download_file_2       = request.form.getlist('download_file_2[]')
+	iperf_server	= request.form.getlist('iperf_server[]')
+	iperf_sessions	= request.form.getlist('iperf_sessions[]')
         config       = request.form.getlist('config[]')
         
         host_machines = app.data.driver.db['host_machines']
@@ -240,6 +247,8 @@ def add_iteration():
                 "vpn_port":vpn_port[x],
                 "download_file_1":download_file_1[x],
                 "download_file_2":download_file_2[x],
+		"iperf_server":iperf_server[x],
+		"iperf_sessions":iperf_sessions[x],
                 "config":config[x]
             });
         return redirect(url_for('list_iterations'))
@@ -410,6 +419,8 @@ def get_config(ip):
                 temp['port'] = lines['vpn_port']
                 temp['download_cdn'] = lines['download_file_1']
                 temp['download_static'] = lines['download_file_2']
+		temp['iperf_server'] = lines['iperf_server']
+		temp['iperf_sessions'] = lines['iperf_sessions']
                 temp['config'] = lines['config']
                 json['settings']['jobs'][host_machine['host_address']]['comparisions'].append(temp)
     else:
@@ -489,6 +500,8 @@ def add_vendor():
         vpn_port       = request.form.getlist('vpn_port[]')
         download_file_1       = request.form.getlist('download_file_1[]')
         download_file_2       = request.form.getlist('download_file_2[]')
+	iperf_server 	= request.form.getlist('iperf_server[]')
+	iperf_sessions = request.form.getlist('iperf_sessions[]')
         config       = request.form.getlist('config[]')
 
         res = db.host_machines.find_one_and_update(
@@ -508,6 +521,8 @@ def add_vendor():
                 "vpn_port":vpn_port[x],
                 "download_file_1":download_file_1[x],
                 "download_file_2":download_file_2[x],
+		"iperf_server":iperf_server[x],
+		"iperf_sessions":iperf_sessions[x],
                 "config":config[x]
             });
         return redirect(url_for('list_iterations'))

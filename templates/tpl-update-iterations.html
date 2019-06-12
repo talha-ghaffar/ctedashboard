@@ -68,6 +68,27 @@
 			        </div>
 		   		</div>
 			</div>
+
+                        <div class="col-md-6">
+                                <div class="bs-example" data-example-id="basic-forms">
+
+                                <div class="form-group">
+                                    <label>Iperf Server</label>
+                                    <input class="form-control" type="text" id="iperf_server">
+                                </div>
+                                </div>
+                        </div>
+
+                        <div class="col-md-6">
+                                <div class="bs-example" data-example-id="basic-forms">
+
+                                <div class="form-group">
+                                    <label>Iperf Sessions</label>
+                                    <input class="form-control" type="text" id="iperf_sessions">
+                                </div>
+                                </div>
+                        </div>
+
       	</div>
       	<div class="row">
 			<div class="col-md-12">
@@ -123,6 +144,8 @@ function GetURLParameter(sParam){
 				$("#vendor").val(data.jobdetails[0].vpn_provider);
 				$("#protocol").val(data.jobdetails[0].vpn_portocol);
 				$("#destination_country").val(data.jobdetails[0].dest_country);
+				$("#iperf_server").val(data.jobdetails[0].iperf_server);
+				$("#iperf_sessions").val(data.jobdetails[0].iperf_sessions);
 				}
 			});
 
@@ -136,7 +159,9 @@ function GetURLParameter(sParam){
 					dest_address :$("#destination_address").val(),
 					vpn_provider :$("#vendor").val(),
 					vpn_portocol :$("#protocol").val(),
-					dest_country :$("#destination_country").val()
+					dest_country :$("#destination_country").val(),
+					iperf_server :$("#iperf_server").val(),
+					iperf_sessions :$("#iperf_sessions").val(),
         		}
    				$.ajax({   							
   					data: JSON.stringify(param),		

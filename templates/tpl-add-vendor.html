@@ -109,6 +109,18 @@ $(function(){
     html += '</div>';
     html += '</div>';
     html += '<div class="form-group">';
+    html += '<label class="col-md-4 control-label" >Iperf Server</label>  ';
+    html += '<div class="col-md-12">';
+    html += '<input id="textinput" name="iperf_server[]" placeholder="" class="form-control input-md" type="text">';
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="form-group">';
+    html += '<label class="col-md-4 control-label" >Iperf Sessions</label>  ';
+    html += '<div class="col-md-12">';
+    html += '<input id="textinput" name="iperf_sessions[]" placeholder="" class="form-control input-md" type="text">';
+    html += '</div>';
+    html += '</div>';
+    html += '<div class="form-group">';
     html += '<label class="col-md-4 control-label" >Config (Leave Empty in case of PureVPN)</label>  ';
     html += '<div class="col-md-12">';
     html += '<textarea style="width:100%;min-height:200px;font-size:11px;" name="config[]"></textarea>';
