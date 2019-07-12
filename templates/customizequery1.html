@@ -43,12 +43,18 @@
           <th>Destination</th>
           <th>Download-1</th>
           <th>Download-2</th>
+	  <th>Iperf-Sender</th>
+	  <th>Iperf-Reciever</th>
           <th>DNS</th>
           <th>Latency</th>
           <th>Download-1</th>
           <th>Ratio-1</th>
           <th>Download-2</th>
           <th>Ratio-2</th>
+	  <th>Iperf-Sender</th>
+	  <th>Ratio-Sender</th>
+	  <th>Iperf-Reciever</th>
+	  <th>Ratio-Reciever</th>
           <th>Date</th>
           <!-- <th>Date &amp; Time</th> -->
         </tr>
@@ -108,12 +114,18 @@ var array = ''
                     <td>" + item.DESTINATION_COUNTRY + "</td> \
                     <td>" + item.BASE_DOWNLOAD_SPEED_STATIC_MB + "</td> \
                     <td>" + item.BASE_DOWNLOAD_SPEED_CDN_MB + "</td> \
+		    <td>" + item.BASE_IPERF_SENDER_MB + "</td> \
+		    <td>" + item.BASE_IPERF_RECIEVER_MB + "</td> \
                     <td>" + item.DIALINGDNS + "</td> \
                     <td>" + item.PING_LATENCY + "</td> \
                     <td>" + item.SPEED_STATIC_MB + "</td> \
                     <td>" + item.ratio_cdn_one + "</td> \
                     <td>" + item.SPEED_CACHE_MB + "</td> \
                     <td>" + item.ratio_cdn_two + "</td> \
+		    <td>" + item.IPERF_SENDER_MB + "</td> \
+		    <td>" + item.ratio_sender + "</td> \
+		    <td>" + item.IPERF_RECIEVER_MB + "</td> \
+		    <td>" + item.ratio_reciever + "</td> \
                     <td>" + item.datetime + "</td> \
                     </tr>"
                   $("table.mastertable tbody").append(tmpl);

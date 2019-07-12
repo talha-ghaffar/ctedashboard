@@ -154,10 +154,14 @@ def get_job_details(jid):
 	    val['dest_country'] = line['dest_country']
             val['vpn_provider'] = line['vpn_provider']
             val['vpn_port'] = line['vpn_port']
-	    #if line['iperf_server']:
-            	#val['iperf_server'] = line['iperf_server']
-            #if line['iperf_sessions']: 
-		#val['iperf_sessions'] = line['iperf_sessions']
+	    try:
+            	val['iperf_server'] = line['iperf_server']
+            except:
+		pass
+	    try:
+	    	val['iperf_sessions'] = line['iperf_sessions']
+	    except:
+	    	pass
             val['config'] = line['config']            
             string.append(val)
         final['jobdetails'] = string
@@ -165,12 +169,19 @@ def get_job_details(jid):
         return jsonify(final)
     elif request.method == 'PUT':
         content = []
-        content=request.get_json()        
-        res = db.machine_iterations.find_one_and_update(
-            { '_id': ObjectId(jid)},
-            { '$set': { 'download_file_1':content['download_file_1'], 'download_file_2':content['download_file_2'], 'vpn_portocol':content['vpn_portocol'], 'dest_address':content['dest_address'], 'vpn_port':content['vpn_port'], 'vpn_provider':content['vpn_provider'], 'config':content['config'], 'dest_country':content['dest_country'], 'iperf_server':content['iperf_server'], 'iperf_sessions':content['iperf_sessions'] } },
-            upsert=True,
-        )
+        content=request.get_json()       
+	try: 
+        	res = db.machine_iterations.find_one_and_update(
+            	{ '_id': ObjectId(jid)},
+           	 { '$set': { 'download_file_1':content['download_file_1'], 'download_file_2':content['download_file_2'], 'vpn_portocol':content['vpn_portocol'], 'dest_address':content['dest_address'], 'vpn_port':content['vpn_port'], 'vpn_provider':content['vpn_provider'], 'config':content['config'], 'dest_country':content['dest_country'], 'iperf_server':content['iperf_server'], 'iperf_sessions':content['iperf_sessions'] } },
+           	 upsert=True,
+        	)
+	except:
+		res = db.machine_iterations.find_one_and_update(
+                { '_id': ObjectId(jid)},
+                 { '$set': { 'download_file_1':content['download_file_1'], 'download_file_2':content['download_file_2'], 'vpn_portocol':content['vpn_portocol'], 'dest_address':content['dest_address'], 'vpn_port':content['vpn_port'], 'vpn_provider':content['vpn_provider'], 'config':content['config'], 'dest_country':content['dest_country'] } },
+                 upsert=True,
+                )
         return json.dumps(True)
 
 
@@ -225,8 +236,14 @@ def add_iteration():
         vpn_port       = request.form.getlist('vpn_port[]')
         download_file_1       = request.form.getlist('download_file_1[]')
         download_file_2       = request.form.getlist('download_file_2[]')
-	iperf_server	= request.form.getlist('iperf_server[]')
-	iperf_sessions	= request.form.getlist('iperf_sessions[]')
+	try:
+		iperf_server	= request.form.getlist('iperf_server[]')
+	except:
+		pass
+	try:
+		iperf_sessions	= request.form.getlist('iperf_sessions[]')
+	except:
+		pass
         config       = request.form.getlist('config[]')
         
         host_machines = app.data.driver.db['host_machines']
@@ -247,8 +264,14 @@ def add_iteration():
                 "vpn_port":vpn_port[x],
                 "download_file_1":download_file_1[x],
                 "download_file_2":download_file_2[x],
+		
 		"iperf_server":iperf_server[x],
+		
+		
+		
 		"iperf_sessions":iperf_sessions[x],
+		
+	
                 "config":config[x]
             });
         return redirect(url_for('list_iterations'))
@@ -306,12 +329,36 @@ def testing_endpoint():
                         val1['DESTINATION_COUNTRY'] = line[key]['DESTINATION_COUNTRY']
                         val1['BASE_DOWNLOAD_SPEED_STATIC_MB'] = line[key]['BASE_DOWNLOAD_SPEED_STATIC_MB']
                         val1['BASE_DOWNLOAD_SPEED_CDN_MB'] = line[key]['BASE_DOWNLOAD_SPEED_CDN_MB']
+			try:
+				val1['BASE_IPERF_SENDER_MB'] = line[key]['BASE_IPERF_SENDER_MB']
+			except:
+				pass
+			try:
+                        	val1['BASE_IPERF_RECIEVER_MB'] = line[key]['BASE_IPERF_RECIEVER_MB']
+			except:
+				pass
                         val1['DIALINGDNS'] = line[key]['DIALINGDNS']
                         val1['PING_LATENCY'] = line[key]['PING_LATENCY']
                         val1['SPEED_STATIC_MB'] = line[key]['SPEED_STATIC_MB']
                         val1['ratio_cdn_one'] = line[key]['ratio_cdn_one']
                         val1['SPEED_CACHE_MB'] = line[key]['SPEED_CACHE_MB']
                         val1['ratio_cdn_two'] = line[key]['ratio_cdn_two']
+			try:
+				val1['IPERF_SENDER_MB'] = line[key]['IPERF_SENDER_MB']
+			except:
+				pass
+			try:
+                        	val1['ratio_sender'] = line[key]['ratio_sender']
+			except:
+				pass
+			try:
+                        	val1['IPERF_RECIEVER_MB'] = line[key]['IPERF_RECIEVER_MB']
+			except:
+				pass
+			try:
+                        	val1['ratio_reciever'] = line[key]['ratio_reciever']
+			except:
+				pass
                         string.append(val1)
                          
                         # print type(string)
@@ -340,7 +387,7 @@ def testing_endpoint1():
         #    dstCountry = v
         elif k == '_stdate':
             startDate = v
-            startDate = dateutil.parser.parse(startDate)
+            startDate = dateutil.parser.parse(startDate) 
             #print startDate
 
         elif k == '_endate':
@@ -372,6 +419,14 @@ def testing_endpoint1():
         val1['DESTINATION_COUNTRY'] = line['DESTINATION_COUNTRY']
         val1['BASE_DOWNLOAD_SPEED_STATIC_MB'] = line['BASE_DOWNLOAD_SPEED_STATIC_MB']
         val1['BASE_DOWNLOAD_SPEED_CDN_MB'] = line['BASE_DOWNLOAD_SPEED_CDN_MB']
+	try:
+		val1['BASE_IPERF_SENDER_MB'] = line['BASE_IPERF_SENDER_MB']
+	except:
+		pass
+	try:
+       		val1['BASE_IPERF_RECIEVER_MB'] = line['BASE_IPERF_RECIEVER_MB']
+	except:
+		pass
         val1['DNS'] = line['DNS']
         val1['PING_LATENCY'] = line['PING_LATENCY']
         val1['Pure_Speed'] = line['Pure_Speed']
@@ -379,6 +434,22 @@ def testing_endpoint1():
         val1['ratio_cdn_one'] = line['ratio_cdn_one']
         val1['SPEED_CACHE_MB'] = line['SPEED_CACHE_MB']
         val1['ratio_cdn_two'] = line['ratio_cdn_two']
+	try:
+		val1['IPERF_SENDER_MB'] = line['IPERF_SENDER_MB']
+	except:
+		pass
+	try:
+        	val1['ratio_sender'] = line['ratio_sender']
+	except:
+		pass
+	try:
+        	val1['IPERF_RECIEVER_MB'] = line['IPERF_RECIEVER_MB']
+	except:
+		pass
+	try:
+        	val1['ratio_reciever'] = line['ratio_reciever']
+	except:
+		pass
         string.append(val1)
 
         final['res'] = string
@@ -410,17 +481,23 @@ def get_config(ip):
             for lines in machine_iterations:
                 temp = {}
                 temp['vendor'] = lines['vpn_provider']
-		print temp['vendor']
+	
                 temp['dest_address'] = lines['dest_address']
-		print temp['dest_address']
+		
                 temp['dest_country'] = lines['dest_country']
-		print temp['dest_country']
+	
                 temp['proto'] = lines['vpn_portocol']
                 temp['port'] = lines['vpn_port']
                 temp['download_cdn'] = lines['download_file_1']
                 temp['download_static'] = lines['download_file_2']
-		temp['iperf_server'] = lines['iperf_server']
-		temp['iperf_sessions'] = lines['iperf_sessions']
+		try:
+			temp['iperf_server'] = lines['iperf_server']
+		except:
+			pass
+		try:
+			temp['iperf_sessions'] = lines['iperf_sessions']
+		except:
+			pass
                 temp['config'] = lines['config']
                 json['settings']['jobs'][host_machine['host_address']]['comparisions'].append(temp)
     else:
@@ -500,8 +577,14 @@ def add_vendor():
         vpn_port       = request.form.getlist('vpn_port[]')
         download_file_1       = request.form.getlist('download_file_1[]')
         download_file_2       = request.form.getlist('download_file_2[]')
-	iperf_server 	= request.form.getlist('iperf_server[]')
-	iperf_sessions = request.form.getlist('iperf_sessions[]')
+	try:
+		iperf_server 	= request.form.getlist('iperf_server[]')
+	except:
+		pass
+	try:
+		iperf_sessions = request.form.getlist('iperf_sessions[]')
+	except:
+		pass
         config       = request.form.getlist('config[]')
 
         res = db.host_machines.find_one_and_update(
@@ -521,8 +604,12 @@ def add_vendor():
                 "vpn_port":vpn_port[x],
                 "download_file_1":download_file_1[x],
                 "download_file_2":download_file_2[x],
+		
 		"iperf_server":iperf_server[x],
+		
+		
 		"iperf_sessions":iperf_sessions[x],
+		
                 "config":config[x]
             });
         return redirect(url_for('list_iterations'))

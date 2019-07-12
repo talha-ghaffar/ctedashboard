@@ -35,8 +35,7 @@ table.bottom_table{
           <th scope="col">Destination</th>          
           <th scope="col" title="Base Download Speed for Static URL">Download-1</th>
           <th scope="col" title="Base Download Speed for CDN URL">Download-2</th>
-	  <th scope="col" title="Base Iperf Sender">Iperf-Sender</th>
-	  <th scope="col" title="Base Iperf Reciever">Iperf-Reciever</th>
+	 
           <th scope="col">DNS</th>
           <th scope="col">Latency</th>
           <th scope="col" width="5%">Connection</th>
@@ -45,9 +44,7 @@ table.bottom_table{
           <th scope="col">Download-2</th>
           <th scope="col">Ratio-2</th>
 	  <th scope="col">Iperf-Sender</th>
-	  <th scope="col">Ratio-Sender</th>
-	  <th scope="col">Iperf-Reciever</th>
-	  <th scope="col">Ratio-Reciever</th>
+       
 <!--           <th scope="col" title="Connection Time">C.Time</th>
           <th scope="col" title="Iteration Time">I.Time</th>
  -->        </tr>
@@ -98,6 +95,9 @@ $(function(){
                   warning_css = 'bgcolor="#daffdb"';
                   var pure_speed_before = RemoveUndefined(data['results_'+i].SPEED_STATIC_MB)
                   var pure_speed_after = RemoveUndefined(data['results_'+i].SPEED_CACHE_MB)
+
+		  var pure_iperf_before = RemoveUndefined(data['results_'+i].IPERF_SENDER_MB)
+                  var pure_iperf_after = RemoveUndefined(data['results_'+i].SPEED_RECIEVER_MB)
                 }
 
 
@@ -108,8 +108,7 @@ $(function(){
                 <td>"+ RemoveUndefined(data['results_'+i].DESTINATION_COUNTRY) +"</td> \
                 <td>"+ RemoveUndefined(data['results_'+i].BASE_DOWNLOAD_SPEED_STATIC_MB) +"</td> \
                 <td>"+ RemoveUndefined(data['results_'+i].BASE_DOWNLOAD_SPEED_CDN_MB) +"</td> \
-		<td>"+ RemoveUndefined(data['results_'+i].BASE_IPERF_SENDER_MB) +"</td> \
-		<td>"+ RemoveUndefined(data['results_'+i].BASE_IPERF_RECIEVER_MB) +"</td> \
+
                 <td>"+ RemoveUndefined(data['results_'+i].DIALINGDNS) +"</td> \
                 <td>"+ RemoveUndefined(data['results_'+i].PING_LATENCY) +"</td> \
                 <td>"+ RemoveUndefined(data['results_'+i].CONNECTION) +"</td> \
@@ -117,10 +116,10 @@ $(function(){
                 <td><a title='100 - ( "+pure_speed_before+" / "+RemoveUndefined(data['results_'+i].SPEED_STATIC_MB)+" * 100)' href='"+ RemoveUndefined(data['results_'+i].ratio_cdn_one) +"'>"+ RemoveUndefined(data['results_'+i].ratio_cdn_one) +"</a></td> \
                 <td>"+ RemoveUndefined(data['results_'+i].SPEED_CACHE_MB) +"</td> \
                 <td><a title='100 - ( "+pure_speed_after+" / "+RemoveUndefined(data['results_'+i].SPEED_CACHE_MB)+" * 100)' href='"+ RemoveUndefined(data['results_'+i].ratio_cdn_two) +"'>"+ RemoveUndefined(data['results_'+i].ratio_cdn_two) +"</a></td> \
+
 		<td>"+ RemoveUndefined(data['results_'+i].IPERF_SENDER_MB) +"</td> \
-		<td>"+ RemoveUndefined(data['results_'+i].ratio_sender) +"</td> \
-		<td>"+ RemoveUndefined(data['results_'+i].IPERF_RECIEVER_MB) +"</td> \
-		<td>"+ RemoveUndefined(data['results_'+i].ratio_reciever) +"</td> \
+               
+
                 </tr>"
                 $("table.bottom_table tbody").append(tmpl2);
 
