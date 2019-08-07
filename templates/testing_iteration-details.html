@@ -106,20 +106,20 @@ $(function(){
                 <th scope='row'>"+ (i+1) +"</th> \
                 <td>"+ RemoveUndefined(data['results_'+i].VENDER) +"</td> \
                 <td>"+ RemoveUndefined(data['results_'+i].DESTINATION_COUNTRY) +"</td> \
-                <td>"+ RemoveUndefined(data['results_'+i].BASE_DOWNLOAD_SPEED_STATIC_MB) +"</td> \
-                <td>"+ RemoveUndefined(data['results_'+i].BASE_DOWNLOAD_SPEED_CDN_MB) +"</td> \
-		<td>"+ RemoveUndefined(data['results_'+i].BASE_IPERF_SENDER_MB) +"</td> \
-		<td>"+ RemoveUndefined(data['results_'+i].BASE_IPERF_RECIEVER_MB) +"</td> \
+                <td>"+ RemoveUndefined(data['results_'+i].BASE_DOWNLOAD_SPEED_STATIC_MB)+" | "+RemoveUndefined(data['results_'+i].BASE_PING_STATIC) +" </td> \
+                <td>"+ RemoveUndefined(data['results_'+i].BASE_DOWNLOAD_SPEED_CDN_MB)+" | "+RemoveUndefined(data['results_'+i].BASE_PING_CDN) +"</td> \
+		<td>"+ RemoveUndefined(data['results_'+i].BASE_IPERF_SENDER_MB)+" | "+RemoveUndefined(data['results_'+i].BASE_IPERF_PING) +"</td> \
+		<td>"+ RemoveUndefined(data['results_'+i].BASE_IPERF_RECIEVER_MB)+" | "+RemoveUndefined(data['results_'+i].BASE_IPERF_PING) +"</td> \
                 <td>"+ RemoveUndefined(data['results_'+i].DIALINGDNS) +"</td> \
                 <td>"+ RemoveUndefined(data['results_'+i].PING_LATENCY) +"</td> \
                 <td>"+ RemoveUndefined(data['results_'+i].CONNECTION) +"</td> \
-                <td>"+ RemoveUndefined(data['results_'+i].SPEED_STATIC_MB) +"</td> \
+                <td>"+ RemoveUndefined(data['results_'+i].SPEED_STATIC_MB)+" | "+RemoveUndefined(data['results_'+i].PING_STATIC) +"</td> \
                 <td><a title='100 - ( "+pure_speed_before+" / "+RemoveUndefined(data['results_'+i].SPEED_STATIC_MB)+" * 100)' href='"+ RemoveUndefined(data['results_'+i].ratio_cdn_one) +"'>"+ RemoveUndefined(data['results_'+i].ratio_cdn_one) +"</a></td> \
-                <td>"+ RemoveUndefined(data['results_'+i].SPEED_CACHE_MB) +"</td> \
+                <td>"+ RemoveUndefined(data['results_'+i].SPEED_CACHE_MB)+" | "+RemoveUndefined(data['results_'+i].PING_CACHE) +"</td> \
                 <td><a title='100 - ( "+pure_speed_after+" / "+RemoveUndefined(data['results_'+i].SPEED_CACHE_MB)+" * 100)' href='"+ RemoveUndefined(data['results_'+i].ratio_cdn_two) +"'>"+ RemoveUndefined(data['results_'+i].ratio_cdn_two) +"</a></td> \
-		<td>"+ RemoveUndefined(data['results_'+i].IPERF_SENDER_MB) +"</td> \
+		<td>"+ RemoveUndefined(data['results_'+i].IPERF_SENDER_MB)+" | "+RemoveUndefined(data['results_'+i].IPERF_PING) +"</td> \
 		<td>"+ RemoveUndefined(data['results_'+i].ratio_sender) +"</td> \
-		<td>"+ RemoveUndefined(data['results_'+i].IPERF_RECIEVER_MB) +"</td> \
+		<td>"+ RemoveUndefined(data['results_'+i].IPERF_RECIEVER_MB)+" | "+RemoveUndefined(data['results_'+i].IPERF_PING) +"</td> \
 		<td>"+ RemoveUndefined(data['results_'+i].ratio_reciever) +"</td> \
                 </tr>"
                 $("table.bottom_table tbody").append(tmpl2);
